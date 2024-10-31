@@ -867,6 +867,156 @@
                 updateMainChart(currentData, e.target.value);
             }
         });
+
+        // Event listeners and UI state management
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize form validation
+            const form = document.getElementById('simulation-form');
+            const participantInput = document.getElementById('participantCount');
+            
+            // Form validation
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!form.checkValidity()) {
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+                
+                const participantCount = parseInt(participantInput.value);
+                if (isNaN(participantCount) || participantCount <= 0) {
+                    alert('Please enter a valid number of participants');
+                    return;
+                }
+                
+                try {
+                    await runSimulation(participantCount);
+                } catch (error) {
+                    console.error('Simulation error:', error);
+                    alert('Error running simulation. Please try again.');
+                }
+            });
+
+            // Navigation button listeners
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.target.getAttribute('href')?.substring(1);
+                    if (targetId) {
+                        const targetElement = document.getElementById(targetId);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+
+            // Chart type selector
+            const chartTypeSelector = document.getElementById('chartTypeSelector');
+            if (chartTypeSelector) {
+                chartTypeSelector.addEventListener('change', (e) => {
+                    if (currentData) {
+                        updateMainChart(currentData, e.target.value);
+                    }
+                });
+            }
+
+            // Data view buttons
+            document.querySelectorAll('[data-chart]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const btnGroup = e.target.closest('.btn-group');
+                    if (btnGroup) {
+                        // Remove active class from all buttons
+                        btnGroup.querySelectorAll('.btn').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        // Add active class to clicked button
+                        e.target.classList.add('active');
+                    }
+                    
+                    currentDataType = e.target.dataset.chart;
+                    const chartTitle = document.getElementById('currentChartTitle');
+                    if (chartTitle) {
+                        chartTitle.textContent = currentDataType.replace(/([A-Z])/g, ' $1').trim();
+                    }
+                    
+                    if (currentData && chartTypeSelector) {
+                        updateMainChart(currentData, chartTypeSelector.value);
+                    }
+                });
+            });
+
+            // File upload handler
+            const dataUpload = document.getElementById('dataUpload');
+            if (dataUpload) {
+                dataUpload.addEventListener('change', async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+
+                    try {
+                        const data = await parseUploadedFile(file);
+                        if (data) {
+                            displayResults(data);
+                        }
+                    } catch (error) {
+                        console.error('Error parsing file:', error);
+                        alert('Error parsing file. Please check the format and try again.');
+                    } finally {
+                        // Reset file input to allow uploading same file again
+                        dataUpload.value = '';
+                    }
+                });
+            }
+        });
+
+        // Handle simulation running
+        async function runSimulation(participantCount) {
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const resultsSection = document.querySelector('.results-section');
+            const progressBar = document.getElementById('simulation-progress');
+            
+            if (!loadingSpinner || !resultsSection || !progressBar) {
+                throw new Error('Required UI elements not found');
+            }
+
+            loadingSpinner.style.display = 'block';
+            resultsSection.style.display = 'none';
+            progressBar.style.width = '0%';
+            progressBar.textContent = '0%';
+            progressBar.setAttribute('aria-valuenow', '0');
+
+            // Simulate progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                if (progress <= 100) {
+                    progressBar.style.width = `${progress}%`;
+                    progressBar.textContent = `${progress}%`;
+                    progressBar.setAttribute('aria-valuenow', progress.toString());
+                }
+            }, 100);
+
+            try {
+                // Simulate processing time
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                const results = await simulateExperiment(participantCount);
+                if (!results) {
+                    throw new Error('Simulation returned no results');
+                }
+
+                currentData = results;
+                displayResults(results);
+            } catch (error) {
+                throw error;
+            } finally {
+                clearInterval(progressInterval);
+                loadingSpinner.style.display = 'none';
+                progressBar.style.width = '100%';
+                progressBar.textContent = '100%';
+                progressBar.setAttribute('aria-valuenow', '100');
+            }
+        }
     </script>
 </body>
 </html>
