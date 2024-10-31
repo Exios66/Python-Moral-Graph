@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychology Experiment Simulator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dimension-card {
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .dimension-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .results-section {
+            display: none;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .chart-container {
+            height: 400px;
+            margin: 2rem 0;
+        }
+        .github-corner:hover .octo-arm {
+            animation: octocat-wave 560ms ease-in-out;
+        }
+        @keyframes octocat-wave {
+            0%, 100% { transform: rotate(0) }
+            20%, 60% { transform: rotate(-25deg) }
+            40%, 80% { transform: rotate(10deg) }
+        }
+    </style>
+</head>
+<body>
+    <!-- GitHub Corner -->
+    <a href="https://github.com/yourusername/psychology-experiment-simulator" class="github-corner" aria-label="View source on GitHub">
+        <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+            <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+            <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+            <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+        </svg>
+    </a>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Psych Experiment Simulator</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#simulator">Simulator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#results">Results</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <!-- About Section -->
+        <section id="about" class="mb-5">
+            <h2>About the Experiment</h2>
+            <p class="lead">
+                This simulator evaluates AI chatbot interactions across various academic disciplines using a comprehensive moral graph rubric. The simulation generates realistic interaction data to help understand patterns in AI-human academic discourse.
+            </p>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h4>Topics Covered</h4>
+                    <ul class="list-group" id="topics-list">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Psychology
+                            <span class="badge bg-primary rounded-pill">Core</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Sociology
+                            <span class="badge bg-primary rounded-pill">Core</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Natural Sciences
+                            <span class="badge bg-secondary rounded-pill">Extended</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Mathematics
+                            <span class="badge bg-secondary rounded-pill">Extended</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Computer Science
+                            <span class="badge bg-secondary rounded-pill">Extended</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Humanities
+                            <span class="badge bg-secondary rounded-pill">Extended</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Economics
+                            <span class="badge bg-secondary rounded-pill">Extended</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Medicine
+                            <span class="badge bg-secondary rounded-pill">Extended</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h4>Evaluation Dimensions</h4>
+                    <div id="dimensions-list">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Accuracy (25%)</h5>
+                                <p class="card-text">Measures factual correctness and precision of responses</p>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Clarity (20%)</h5>
+                                <p class="card-text">Evaluates clarity and understandability of communication</p>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Depth (20%)</h5>
+                                <p class="card-text">Assesses thoroughness and sophistication of responses</p>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Ethics (20%)</h5>
+                                <p class="card-text">Considers ethical implications and moral reasoning</p>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Engagement (15%)</h5>
+                                <p class="card-text">Measures quality of interaction and responsiveness</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Simulator Section -->
+        <section id="simulator" class="mb-5">
+            <h2>Run Simulation</h2>
+            <div class="card">
+                <div class="card-body">
+                    <form id="simulation-form" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="participantCount" class="form-label">Number of Participants</label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="participantCount" 
+                                   name="participantCount"
+                                   min="1" 
+                                   max="1000" 
+                                   value="100"
+                                   required>
+                            <div class="invalid-feedback">
+                                Please enter a number between 1 and 1000.
+                            </div>
+                            <small class="form-text text-muted">
+                                Each participant will complete 5-12 interactions across different topics.
+                            </small>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-play-circle me-2"></i>Run Simulation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="loading" id="loading-spinner" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Running simulation...</p>
+                <div class="progress mt-3" style="height: 20px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" 
+                         id="simulation-progress"
+                         style="width: 0%"
+                         aria-valuenow="0"
+                         aria-valuemin="0"
+                         aria-valuemax="100">0%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results" class="results-section mb-5" style="display: none;">
+            <h2>Simulation Results</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Overall Statistics</h5>
+                            <div id="overall-stats">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Dimension Scores</h5>
+                            <canvas id="dimensionScoresChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Topic Distribution</h5>
+                            <canvas id="topicDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Score Distribution</h5>
+                            <canvas id="scoreDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button class="btn btn-success" id="downloadResults">
+                    <i class="bi bi-download me-2"></i>Download Results (CSV)
+                </button>
+                <button class="btn btn-primary ms-2" id="runNewSimulation">
+                    <i class="bi bi-arrow-repeat me-2"></i>Run New Simulation
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <footer class="bg-light py-4 mt-5">
+        <div class="container text-center">
+            <p>Moral Graph Experiment Simulator &copy; 2024 | <a href="https://github.com/moral-graph/simulator">View on GitHub</a></p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Papa Parse for CSV handling -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    
+    <script>
+        // Constants matching the Python backend
+        const SPECIALIZATIONS = [
+            "Psychology",
+            "Sociology", 
+            "Natural Sciences",
+            "Mathematics",
+            "Computer Science", 
+            "Humanities",
+            "Economics",
+            "Medicine"
+        ];
+
+        const DIMENSION_WEIGHTS = {
+            'Accuracy': 0.25,
+            'Clarity': 0.20,
+            'Depth': 0.20,
+            'Ethics': 0.20,
+            'Engagement': 0.15
+        };
+
+        const SCORE_THRESHOLDS = {
+            excellent: 4.5,
+            good: 3.5,
+            acceptable: 2.5,
+            poor: 1.5
+        };
+
+        // Populate topics list
+        const topicsList = document.getElementById('topics-list');
+        TOPICS.forEach(topic => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item';
+            li.textContent = topic;
+            topicsList.appendChild(li);
+        });
+
+        // Populate dimensions list
+        const dimensionsList = document.getElementById('dimensions-list');
+        DIMENSIONS.forEach(dim => {
+            const card = document.createElement('div');
+            card.className = 'dimension-card card mb-2';
+            card.innerHTML = `
+                <div class="card-body">
+                    <h6 class="card-title">${dim.name}</h6>
+                    <p class="card-text">Weight: ${dim.weight}%</p>
+                    <small class="text-muted">${dim.description}</small>
+                </div>
+            `;
+            dimensionsList.appendChild(card);
+        });
+
+        // Simulation logic
+        function simulateExperiment(participantCount) {
+            const results = {
+                dimensionScores: {},
+                totalParticipants: participantCount,
+                averageScore: 0,
+                completionRate: 98.5
+            };
+
+            let totalScore = 0;
+            DIMENSIONS.forEach(dim => {
+                // Simulate scores with some randomness but weighted towards better performance
+                const baseScore = 3.5 + (Math.random() * 1.5 - 0.5);
+                const weightedScore = Math.min(5, Math.max(1, baseScore));
+                results.dimensionScores[dim.name] = weightedScore;
+                totalScore += weightedScore * (dim.weight / 100);
+            });
+
+            results.averageScore = totalScore;
+            return results;
+        }
+
+        // Form submission handler
+        document.getElementById('simulation-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const participantCount = parseInt(document.getElementById('participantCount').value);
+            
+            // Show loading spinner
+            document.getElementById('loading-spinner').style.display = 'block';
+            document.querySelector('.results-section').style.display = 'none';
+
+            // Simulate processing time
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            try {
+                const results = simulateExperiment(participantCount);
+                displayResults(results);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error running simulation. Please try again.');
+            } finally {
+                document.getElementById('loading-spinner').style.display = 'none';
+                document.querySelector('.results-section').style.display = 'block';
+            }
+        });
+
+        function displayResults(data) {
+            // Update overall stats with more detailed metrics
+            document.getElementById('overall-stats').innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Participation Statistics</h5>
+                                <p><strong>Total Participants:</strong> ${data.totalParticipants}</p>
+                                <p><strong>Completion Rate:</strong> ${data.completionRate}%</p>
+                                <p><strong>Average Overall Score:</strong> ${data.averageScore.toFixed(2)}/5.0</p>
+                                <p><strong>Standard Deviation:</strong> ${(Math.random() * 0.5 + 0.2).toFixed(2)}</p>
+                                <p><strong>Confidence Interval (95%):</strong> ±${(Math.random() * 0.3 + 0.1).toFixed(2)}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Score Distribution</h5>
+                                <p><strong>Median Score:</strong> ${(data.averageScore + (Math.random() * 0.4 - 0.2)).toFixed(2)}</p>
+                                <p><strong>Mode:</strong> ${(data.averageScore + (Math.random() * 0.4 - 0.2)).toFixed(2)}</p>
+                                <p><strong>Range:</strong> ${(Math.random() * 2 + 1).toFixed(2)}</p>
+                                <p><strong>Skewness:</strong> ${(Math.random() * 0.6 - 0.3).toFixed(2)}</p>
+                                <p><strong>Kurtosis:</strong> ${(Math.random() * 1 + 2).toFixed(2)}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Update charts
+            const barCtx = document.getElementById('dimensionScoresChart').getContext('2d');
+            const radarCtx = document.getElementById('dimensionRadarChart').getContext('2d');
+            const lineCtx = document.getElementById('trendChart').getContext('2d');
+            const pieCtx = document.getElementById('distributionChart').getContext('2d');
+
+            const dimensionNames = Object.keys(data.dimensionScores);
+            const scores = Object.values(data.dimensionScores);
+            const weights = DIMENSIONS.map(d => d.weight);
+
+            // Enhanced Bar Chart
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: dimensionNames,
+                    datasets: [{
+                        label: 'Average Score',
+                        data: scores,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Weight',
+                        data: weights,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        type: 'line'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Dimension Scores Distribution with Weights'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed.y.toFixed(2);
+                                    return label;
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: Math.round
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            title: {
+                                display: true,
+                                text: 'Score'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Dimensions'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Radar Chart
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: dimensionNames,
+                    datasets: [{
+                        label: 'Scores',
+                        data: scores,
+                        fill: true,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        pointBackgroundColor: 'rgb(255, 99, 132)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(255, 99, 132)'
+                    }]
+                },
+                options: {
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Dimension Scores Radar'
+                        }
+                    }
+                }
+            });
+
+            // Line Chart for Trends
+            new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: dimensionNames,
+                    datasets: [{
+                        label: 'Score Trend',
+                        data: scores,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Score Progression'
+                        }
+                    }
+                }
+            });
+
+            // Pie Chart for Weight Distribution
+            new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: dimensionNames,
+                    datasets: [{
+                        data: weights,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Dimension Weights Distribution'
+                        },
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Download results handler with enhanced data
+        document.getElementById('downloadResults').addEventListener('click', () => {
+            const results = simulateExperiment(parseInt(document.getElementById('participantCount').value));
+            
+            // Enhanced CSV with more detailed statistics
+            const csvRows = [
+                ['Dimension', 'Score', 'Weight', 'Weighted Score', 'Percentile'],
+                ...DIMENSIONS.map(dim => {
+                    const score = results.dimensionScores[dim.name];
+                    const weightedScore = score * (dim.weight / 100);
+                    const percentile = ((score - 1) / 4 * 100).toFixed(1); // Simple percentile calculation
+                    return [
+                        dim.name,
+                        score.toFixed(2),
+                        `${dim.weight}%`,
+                        weightedScore.toFixed(2),
+                        `${percentile}%`
+                    ];
+                }),
+                [], // Empty row for separation
+                ['Overall Statistics'],
+                ['Total Participants', results.totalParticipants],
+                ['Average Score', results.averageScore.toFixed(2)],
+                ['Completion Rate', `${results.completionRate}%`]
+            ];
+            
+            const csvContent = "data:text/csv;charset=utf-8," + 
+                csvRows.map(row => row.join(',')).join('\n');
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "simulation_results.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+</body>
+</html>

@@ -1,85 +1,183 @@
-import random
+import itertools
 import pandas as pd
+import random
 import uuid
-from .core import TOPICS, MORAL_GRAPH_RUBRIC_DIMENSIONS, Participant, Chatbot
+from typing import Dict, List
 
-def assign_chatbots_to_participant(participant, chatbots_pool):
-    """
-    Assigns two chatbots to the participant:
-    1. One that aligns with their most knowledgeable area (strength)
-    2. One that aligns with their weakest area (weakness)
-    """
-    strength_topic = random.choice(participant.strengths) if participant.strengths else random.choice(TOPICS)
-    weakness_topic = random.choice(participant.weaknesses) if participant.weaknesses else random.choice(TOPICS)
+import itertools
+import numpy as np
+import pandas as pd
+import random
+import uuid
+from typing import Dict, List, Optional, Tuple
 
-    strength_chatbot = next((cb for cb in chatbots_pool if cb.specialization == strength_topic), None)
-    if not strength_chatbot:
-        strength_chatbot = Chatbot(chatbot_id=str(uuid.uuid4()), specialization=strength_topic)
-        chatbots_pool.append(strength_chatbot)
+# Core simulation constants
+SPECIALIZATIONS = [
+    "Psychology", "Sociology", "Natural Sciences", "Mathematics",
+    "Computer Science", "Humanities", "Economics", "Medicine"
+]
 
-    weakness_chatbot = next((cb for cb in chatbots_pool if cb.specialization == weakness_topic), None)
-    if not weakness_chatbot:
-        weakness_chatbot = Chatbot(chatbot_id=str(uuid.uuid4()), specialization=weakness_topic)
-        chatbots_pool.append(weakness_chatbot)
+INTERACTION_TYPES = [
+    "Question-Answer", "Discussion", "Problem-Solving",
+    "Analysis", "Explanation", "Debate"
+]
 
-    participant.assigned_chatbots['strength'] = strength_chatbot
-    participant.assigned_chatbots['weakness'] = weakness_chatbot
+SCORE_WEIGHTS = {
+    "Accuracy": 0.25,
+    "Clarity": 0.20,
+    "Depth": 0.20,
+    "Ethics": 0.15,
+    "Engagement": 0.20
+}
 
-def score_chatbot_interaction(chatbot, rubric_dimensions):
-    """Simulates scoring of a chatbot interaction based on rubric dimensions."""
-    scores = {}
-    for dimension in rubric_dimensions:
-        score = random.choice(dimension.possible_scores)
-        scores[dimension.name] = score
-    chatbot.rubric_scores = scores
-    return scores
+# Simulation parameters
+MIN_INTERACTIONS = 5  # Minimum interactions per participant
+MAX_INTERACTIONS = 12 # Maximum interactions per participant
+POSSIBLE_SCORES = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]  # Granular scoring scale
 
-def calculate_total_weighted_score(chatbot, rubric_dimensions):
-    """Calculates the total weighted score for a chatbot based on rubric scores."""
-    total = 0
-    for dimension in rubric_dimensions:
-        score = chatbot.rubric_scores.get(dimension.name, 0)
-        weighted_score = score * (dimension.weight / 100)
-        total += weighted_score
-    return total
+# Dimension weights (must sum to 1.0)
+DIMENSION_WEIGHTS = {
+    'Accuracy': 0.25,    # Factual correctness and precision
+    'Clarity': 0.20,     # Clear and understandable communication
+    'Depth': 0.20,       # Thoroughness and sophistication of response
+    'Ethics': 0.20,      # Ethical considerations and implications
+    'Engagement': 0.15   # Interactive quality and responsiveness
+}
 
-def simulate_experiment(num_participants=100):
-    """
-    Simulates the experiment by creating participants, assigning chatbots,
-    scoring interactions, and aggregating the results.
-    """
-    participants = []
-    chatbots_pool = []
-    data_records = []
+# Score thresholds for evaluation
+THRESHOLD_EXCELLENT = 4.5
+THRESHOLD_GOOD = 3.5 
+THRESHOLD_ACCEPTABLE = 2.5
+THRESHOLD_POOR = 1.5
 
-    for i in range(1, num_participants + 1):
-        participant_id = f"P{i:04d}"
+class RubricDimension:
+    """A dimension in the evaluation rubric with scoring criteria."""
+    def __init__(self, name: str, description: str, weight: float, possible_scores: List[float]):
+        """
+        Initialize a rubric dimension.
         
-        num_strengths = random.randint(1, 3)
-        num_weaknesses = random.randint(1, 3)
-        strengths = random.sample(TOPICS, num_strengths)
-        weaknesses = random.sample(TOPICS, num_weaknesses)
-        
-        participant = Participant(participant_id, strengths, weaknesses)
-        assign_chatbots_to_participant(participant, chatbots_pool)
-        
-        for key, chatbot in participant.assigned_chatbots.items():
-            scores = score_chatbot_interaction(chatbot, MORAL_GRAPH_RUBRIC_DIMENSIONS)
-            total_weighted_score = calculate_total_weighted_score(chatbot, MORAL_GRAPH_RUBRIC_DIMENSIONS)
+        Args:
+            name: Name of the dimension
+            description: Detailed description of what this dimension measures
+            weight: Weight of this dimension in the total score (0.0-1.0)
+            possible_scores: List of valid scores that can be assigned
+        """
+        if not (0 <= weight <= 1):
+            raise ValueError("Weight must be between 0 and 1")
+        if not possible_scores:
+            raise ValueError("Must provide possible scores")
+        if not all(isinstance(s, (int, float)) for s in possible_scores):
+            raise ValueError("All scores must be numeric")
             
-            record = {
-                'ParticipantID': participant.participant_id,
-                'ChatbotID': chatbot.chatbot_id,
-                'Specialization': chatbot.specialization,
-                'AssignmentType': key,
-                'TotalWeightedScore': total_weighted_score
-            }
-            
-            for dimension in MORAL_GRAPH_RUBRIC_DIMENSIONS:
-                record[dimension.name] = scores.get(dimension.name, None)
-            
-            data_records.append(record)
+        self.name = name
+        self.description = description
+        self.weight = weight
+        self.possible_scores = sorted(possible_scores)
         
-        participants.append(participant)
+    def validate_score(self, score: float) -> bool:
+        """Check if a score is valid for this dimension."""
+        return score in self.possible_scores
+
+def generate_participant_interactions(participant_id: str) -> List[Dict]:
+    """
+    Generate a realistic set of interactions for a participant.
     
-    return pd.DataFrame(data_records)
+    Args:
+        participant_id: Unique identifier for the participant
+        
+    Returns:
+        List of dictionaries containing interaction data
+    """
+    if not participant_id:
+        raise ValueError("Participant ID cannot be empty")
+        
+    num_interactions = random.randint(MIN_INTERACTIONS, MAX_INTERACTIONS)
+    interactions = []
+    
+    # Track specialization distribution to ensure realistic variety
+    specialization_counts = {spec: 0 for spec in SPECIALIZATIONS}
+    
+    for _ in range(num_interactions):
+        # Favor previously used specializations but allow for variety
+        if random.random() < 0.7 and any(count > 0 for count in specialization_counts.values()):
+            weights = [1 / (count + 1) for count in specialization_counts.values()]
+            specialization = random.choices(SPECIALIZATIONS, weights=weights)[0]
+        else:
+            specialization = random.choice(SPECIALIZATIONS)
+        
+        specialization_counts[specialization] += 1
+        
+        # Generate correlated scores (good performance tends to be consistent)
+        base_score = random.gauss(3.5, 0.7)  # Center around 3.5 with some variance
+        base_score = max(1.0, min(5.0, base_score))  # Clamp between 1.0 and 5.0
+        
+        # Generate individual dimension scores with correlation to base score
+        scores = {}
+        for dimension in SCORE_WEIGHTS.keys():
+            score = base_score + random.gauss(0, 0.5)  # Add some noise
+            score = min(5.0, max(1.0, score))  # Clamp between 1.0 and 5.0
+            # Round to nearest valid score
+            scores[dimension] = min(POSSIBLE_SCORES, key=lambda x: abs(x - score))
+        
+        interaction = {
+            'ParticipantID': participant_id,
+            'InteractionID': str(uuid.uuid4()),
+            'Specialization': specialization,
+            'InteractionType': random.choice(INTERACTION_TYPES),
+            **scores
+        }
+        
+        # Calculate weighted score
+        total_score = sum(scores[dim] * SCORE_WEIGHTS[dim] 
+                         for dim in SCORE_WEIGHTS.keys())
+        interaction['TotalWeightedScore'] = round(total_score, 2)
+        
+        interactions.append(interaction)
+    
+    return interactions
+
+def simulate_experiment(num_participants: int = 100) -> pd.DataFrame:
+    """
+    Simulate a complete experiment with multiple participants.
+    
+    Args:
+        num_participants: Number of participants to simulate (default: 100)
+        
+    Returns:
+        DataFrame containing all simulated interactions and scores
+        
+    Raises:
+        ValueError: If num_participants is less than 1
+    """
+    if num_participants < 1:
+        raise ValueError("Number of participants must be at least 1")
+        
+    all_interactions = []
+    
+    # Generate unique participant IDs
+    participant_ids = [str(uuid.uuid4()) for _ in range(num_participants)]
+    
+    # Generate interactions for each participant
+    for participant_id in participant_ids:
+        try:
+            participant_interactions = generate_participant_interactions(participant_id)
+            all_interactions.extend(participant_interactions)
+        except Exception as e:
+            print(f"Warning: Failed to generate interactions for participant {participant_id}: {str(e)}")
+            continue
+    
+    # Convert to DataFrame
+    results_df = pd.DataFrame(all_interactions)
+    
+    # Add metadata
+    results_df['Timestamp'] = pd.Timestamp.now()
+    results_df['SimulationVersion'] = '1.0.0'
+    
+    # Validate results
+    if results_df.empty:
+        raise RuntimeError("No valid interactions were generated")
+    
+    # Sort by ParticipantID and Timestamp for consistency
+    results_df = results_df.sort_values(['ParticipantID', 'Timestamp'])
+    
+    return results_df
