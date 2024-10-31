@@ -202,6 +202,17 @@
         <!-- Results Section -->
         <section id="results" class="results-section mb-5" style="display: none;">
             <h2>Simulation Results</h2>
+            
+            <!-- Add dropdown for chart selection -->
+            <div class="mb-4">
+                <select class="form-select" id="chartTypeSelector">
+                    <option value="bar">Bar Chart</option>
+                    <option value="line">Line Chart</option>
+                    <option value="radar">Radar Chart</option>
+                    <option value="pie">Pie Chart</option>
+                </select>
+            </div>
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
@@ -450,56 +461,160 @@
             });
         }
 
-        function updateCharts(data) {
-            // Clean up existing charts
+        function generateTopicData() {
+            return SPECIALIZATIONS.map(topic => ({
+                topic: topic,
+                count: Math.floor(Math.random() * 50) + 10
+            }));
+        }
+
+        function generateScoreData() {
+            return {
+                excellent: Math.floor(Math.random() * 30) + 20,
+                good: Math.floor(Math.random() * 40) + 30,
+                acceptable: Math.floor(Math.random() * 20) + 10,
+                poor: Math.floor(Math.random() * 10)
+            };
+        }
+
+        function updateCharts(data, chartType = 'bar') {
+            // Update dimension scores chart
+            const dimensionCtx = document.getElementById('dimensionScoresChart').getContext('2d');
+            const topicCtx = document.getElementById('topicDistributionChart').getContext('2d');
+            const scoreCtx = document.getElementById('scoreDistributionChart').getContext('2d');
+
+            // Destroy existing charts
             [dimensionChart, topicChart, scoreChart].forEach(chart => {
                 if (chart) chart.destroy();
             });
 
-            // Update dimension scores chart
-            const dimensionCtx = document.getElementById('dimensionScoresChart')?.getContext('2d');
-            if (dimensionCtx) {
-                dimensionChart = new Chart(dimensionCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(data.dimensionScores),
-                        datasets: [{
-                            label: 'Dimension Scores',
-                            data: Object.values(data.dimensionScores),
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 5,
-                                ticks: {
-                                    stepSize: 0.5
-                                }
+            // Generate additional data
+            const topicData = generateTopicData();
+            const scoreData = generateScoreData();
+
+            // Create new charts
+            dimensionChart = new Chart(dimensionCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(data.dimensionScores),
+                    datasets: [{
+                        label: 'Dimension Scores',
+                        data: Object.values(data.dimensionScores),
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            ticks: {
+                                stepSize: 0.5
                             }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
                         },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: (context) => {
-                                        const label = context.dataset.label || '';
-                                        const value = context.parsed.y.toFixed(2);
-                                        return `${label}: ${value}`;
-                                    }
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y.toFixed(2);
+                                    return `${label}: ${value}`;
                                 }
                             }
                         }
                     }
-                });
-            }
+                }
+            });
+
+            topicChart = new Chart(topicCtx, {
+                type: 'bar',
+                data: {
+                    labels: topicData.map(item => item.topic),
+                    datasets: [{
+                        label: 'Topic Distribution',
+                        data: topicData.map(item => item.count),
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: Math.max(...topicData.map(item => item.count)),
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y.toFixed(2);
+                                    return `${label}: ${value}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            scoreChart = new Chart(scoreCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(scoreData),
+                    datasets: [{
+                        label: 'Score Distribution',
+                        data: Object.values(scoreData),
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: Math.max(...Object.values(scoreData)),
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y.toFixed(2);
+                                    return `${label}: ${value}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         // Download results handler with error handling
