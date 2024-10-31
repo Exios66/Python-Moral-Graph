@@ -285,7 +285,10 @@
             poor: 1.5
         };
 
-        // Chart instances
+        // Global variables for chart management
+        let currentData = null;
+        let currentChart = null;
+        let currentDataType = 'dimensionScores';
         let dimensionChart = null;
         let topicChart = null;
         let scoreChart = null;
@@ -409,13 +412,24 @@
         // Results display with error handling
         async function displayResults(data) {
             try {
-                currentData = data;
-                updateResultsTable(data);
+                if (!data) {
+                    throw new Error('No data provided to display');
+                }
+                
+                currentData = data; // Set the current data
+                
+                // Update the chart title
+                document.getElementById('currentChartTitle').textContent = 
+                    currentDataType.replace(/([A-Z])/g, ' $1').trim();
+                
+                // Update the main chart with the current data and chart type
                 updateMainChart(data, document.getElementById('chartTypeSelector').value);
+                
+                // Show the results section
                 document.querySelector('.results-section').style.display = 'block';
             } catch (error) {
                 console.error('Error displaying results:', error);
-                throw error;
+                alert('Error displaying results. Please try again.');
             }
         }
 
@@ -653,11 +667,6 @@
         // Initialize UI on load
         document.addEventListener('DOMContentLoaded', initializeUI);
 
-        // Add these to your existing script section
-        let currentData = null;
-        let currentChart = null;
-        let currentDataType = 'dimensionScores';
-
         // File upload handler
         document.getElementById('dataUpload').addEventListener('change', async (e) => {
             const file = e.target.files[0];
@@ -840,6 +849,24 @@
                     };
             }
         }
+
+        // Add this after your other event listeners
+        document.querySelectorAll('[data-chart]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                currentDataType = e.target.dataset.chart;
+                document.getElementById('currentChartTitle').textContent = 
+                    currentDataType.replace(/([A-Z])/g, ' $1').trim();
+                if (currentData) {
+                    updateMainChart(currentData, document.getElementById('chartTypeSelector').value);
+                }
+            });
+        });
+
+        document.getElementById('chartTypeSelector').addEventListener('change', (e) => {
+            if (currentData) {
+                updateMainChart(currentData, e.target.value);
+            }
+        });
     </script>
 </body>
 </html>
