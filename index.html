@@ -207,8 +207,10 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Overall Statistics</h5>
-                            <div id="overall-stats">
-                                <!-- Populated by JavaScript -->
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="overall-stats">
+                                    <!-- Populated by JavaScript -->
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -292,54 +294,82 @@
             poor: 1.5
         };
 
+        // Initialize charts
+        let dimensionChart = null;
+        let topicChart = null;
+        let scoreChart = null;
+
         // Populate topics list
         const topicsList = document.getElementById('topics-list');
-        TOPICS.forEach(topic => {
-            const li = document.createElement('li');
-            li.className = 'list-group-item';
-            li.textContent = topic;
-            topicsList.appendChild(li);
-        });
+        if (typeof TOPICS !== 'undefined') {
+            TOPICS.forEach(topic => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                li.textContent = topic;
+                topicsList.appendChild(li);
+            });
+        }
 
         // Populate dimensions list
         const dimensionsList = document.getElementById('dimensions-list');
-        DIMENSIONS.forEach(dim => {
-            const card = document.createElement('div');
-            card.className = 'dimension-card card mb-2';
-            card.innerHTML = `
-                <div class="card-body">
-                    <h6 class="card-title">${dim.name}</h6>
-                    <p class="card-text">Weight: ${dim.weight}%</p>
-                    <small class="text-muted">${dim.description}</small>
-                </div>
-            `;
-            dimensionsList.appendChild(card);
-        });
-
-        // Simulation logic
-        function simulateExperiment(participantCount) {
-            // Initialize dimensions with their weights from DIMENSION_WEIGHTS
-            const dimensionScores = {};
-            
-            // Generate realistic scores for each dimension
-            Object.keys(DIMENSION_WEIGHTS).forEach(dimension => {
-                // Generate a score between 3.0 and 4.8 with some randomness
-                const baseScore = 3.0 + (Math.random() * 1.8);
-                dimensionScores[dimension] = parseFloat(baseScore.toFixed(2));
+        if (typeof DIMENSIONS !== 'undefined') {
+            DIMENSIONS.forEach(dim => {
+                const card = document.createElement('div');
+                card.className = 'dimension-card card mb-2';
+                card.innerHTML = `
+                    <div class="card-body">
+                        <h6 class="card-title">${dim.name}</h6>
+                        <p class="card-text">Weight: ${dim.weight}%</p>
+                        <small class="text-muted">${dim.description}</small>
+                    </div>
+                `;
+                dimensionsList.appendChild(card);
             });
+        }
 
-            // Calculate overall statistics
-            const averageScore = Object.entries(dimensionScores)
-                .reduce((acc, [dim, score]) => {
-                    return acc + (score * DIMENSION_WEIGHTS[dim]);
-                }, 0);
+        // Simulation logic with error handling
+        function simulateExperiment(participantCount) {
+            try {
+                if (!participantCount || participantCount < 1) {
+                    throw new Error('Invalid participant count');
+                }
 
-            return {
-                dimensionScores: dimensionScores,
-                totalParticipants: participantCount,
-                averageScore: parseFloat(averageScore.toFixed(2)),
-                completionRate: 98.5
-            };
+                // Initialize dimensions with their weights
+                const dimensionScores = {};
+                
+                // Generate realistic scores for each dimension
+                Object.keys(DIMENSION_WEIGHTS).forEach(dimension => {
+                    // Generate a score between 3.0 and 4.8 with some randomness
+                    const baseScore = 3.0 + (Math.random() * 1.8);
+                    dimensionScores[dimension] = parseFloat(baseScore.toFixed(2));
+                });
+
+                // Calculate overall statistics with validation
+                const averageScore = Object.entries(dimensionScores)
+                    .reduce((acc, [dim, score]) => {
+                        const weight = DIMENSION_WEIGHTS[dim];
+                        if (typeof weight !== 'number') {
+                            throw new Error(`Invalid weight for dimension: ${dim}`);
+                        }
+                        return acc + (score * weight);
+                    }, 0);
+
+                // Generate additional realistic metrics
+                const completionRate = 95 + (Math.random() * 5); // 95-100%
+                const interactionsPerParticipant = Math.floor(5 + (Math.random() * 7)); // 5-12
+
+                return {
+                    dimensionScores: dimensionScores,
+                    totalParticipants: participantCount,
+                    averageScore: parseFloat(averageScore.toFixed(2)),
+                    completionRate: parseFloat(completionRate.toFixed(1)),
+                    totalInteractions: participantCount * interactionsPerParticipant,
+                    averageInteractionsPerParticipant: interactionsPerParticipant
+                };
+            } catch (error) {
+                console.error('Simulation error:', error);
+                throw new Error('Failed to simulate experiment: ' + error.message);
+            }
         }
 
         // Form submission handler
