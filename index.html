@@ -31,9 +31,9 @@
             animation: octocat-wave 560ms ease-in-out;
         }
         @keyframes octocat-wave {
-            0%, 100% { transform: rotate(0) }
-            20%, 60% { transform: rotate(-25deg) }
-            40%, 80% { transform: rotate(10deg) }
+            0%, 100% { transform: translate3d(0, 0, 0) rotate(0) }
+            20%, 60% { transform: translate3d(0, 0, 0) rotate(-25deg) }
+            40%, 80% { transform: translate3d(0, 0, 0) rotate(10deg) }
         }
         :root {
             --bs-body-bg: #ffffff;
@@ -759,163 +759,295 @@
 
         // Process uploaded data
         function processUploadedData(data) {
-            // Validate and format the uploaded data
-            const processedData = {
-                dimensionScores: {},
-                topicDistribution: {},
-                scoreDistribution: {}
-            };
+            try {
+                // Validate data is an array or object
+                if (!data || (typeof data !== 'object' && !Array.isArray(data))) {
+                    throw new Error('Invalid data format');
+                }
 
-            // Add validation and processing logic based on your data structure
-            return processedData;
+                // Initialize processed data structure
+                const processedData = {
+                    dimensionScores: {},
+                    topicDistribution: {},
+                    scoreDistribution: {}
+                };
+
+                // Convert array data to expected format if needed
+                const dataArray = Array.isArray(data) ? data : [data];
+
+                // Process dimension scores
+                const dimensions = ['clarity', 'depth', 'accuracy', 'relevance'];
+                dimensions.forEach(dim => {
+                    const scores = dataArray.map(item => parseFloat(item[dim])).filter(score => !isNaN(score));
+                    processedData.dimensionScores[dim] = scores.length ? 
+                        scores.reduce((a,b) => a + b, 0) / scores.length : 0;
+                });
+
+                // Process topic distribution
+                const topics = {};
+                dataArray.forEach(item => {
+                    if (item.topic) {
+                        topics[item.topic] = (topics[item.topic] || 0) + 1;
+                    }
+                });
+                processedData.topicDistribution = topics;
+
+                // Process score distribution
+                const scores = {};
+                dataArray.forEach(item => {
+                    const score = Math.round(parseFloat(item.score || 0));
+                    if (!isNaN(score)) {
+                        scores[score] = (scores[score] || 0) + 1;
+                    }
+                });
+                processedData.scoreDistribution = scores;
+
+                return processedData;
+
+            } catch (error) {
+                console.error('Error processing data:', error);
+                throw new Error('Failed to process data: ' + error.message);
+            }
         }
 
         // Update chart display
         function updateMainChart(data, chartType) {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            
-            if (currentChart) {
-                currentChart.destroy();
-            }
+            try {
+                if (!data || !chartType) {
+                    throw new Error('Invalid chart parameters');
+                }
 
-            const chartData = prepareChartData(data, currentDataType);
-            
-            currentChart = new Chart(ctx, {
-                type: chartType,
-                data: chartData,
-                options: getChartOptions(currentDataType)
-            });
+                const canvas = document.getElementById('mainChart');
+                if (!canvas) {
+                    throw new Error('Chart canvas not found');
+                }
+
+                const ctx = canvas.getContext('2d');
+                
+                if (currentChart) {
+                    currentChart.destroy();
+                }
+
+                const chartData = prepareChartData(data, currentDataType);
+                if (!chartData) {
+                    throw new Error('Failed to prepare chart data');
+                }
+                
+                currentChart = new Chart(ctx, {
+                    type: chartType,
+                    data: chartData,
+                    options: getChartOptions(currentDataType)
+                });
+
+            } catch (error) {
+                console.error('Error updating chart:', error);
+                throw new Error('Failed to update chart: ' + error.message);
+            }
         }
 
         // Prepare chart data based on type
         function prepareChartData(data, dataType) {
-            switch(dataType) {
-                case 'dimensionScores':
-                    return {
-                        labels: Object.keys(data.dimensionScores),
-                        datasets: [{
-                            label: 'Dimension Scores',
-                            data: Object.values(data.dimensionScores),
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    };
-                case 'topicDistribution':
-                    const topicData = generateTopicData();
-                    return {
-                        labels: topicData.map(t => t.topic),
-                        datasets: [{
-                            label: 'Topic Distribution',
-                            data: topicData.map(t => t.count),
-                            backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }]
-                    };
-                case 'scoreDistribution':
-                    const scoreData = generateScoreData();
-                    return {
-                        labels: Object.keys(scoreData),
-                        datasets: [{
-                            label: 'Score Distribution',
-                            data: Object.values(scoreData),
-                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            borderWidth: 1
-                        }]
-                    };
+            try {
+                if (!data || !dataType) {
+                    throw new Error('Invalid data parameters');
+                }
+
+                const colors = {
+                    dimension: {
+                        bg: 'rgba(54, 162, 235, 0.5)',
+                        border: 'rgba(54, 162, 235, 1)'
+                    },
+                    topic: {
+                        bg: 'rgba(75, 192, 192, 0.5)',
+                        border: 'rgba(75, 192, 192, 1)'
+                    },
+                    score: {
+                        bg: 'rgba(153, 102, 255, 0.5)',
+                        border: 'rgba(153, 102, 255, 1)'
+                    }
+                };
+
+                switch(dataType) {
+                    case 'dimensionScores':
+                        return {
+                            labels: Object.keys(data.dimensionScores),
+                            datasets: [{
+                                label: 'Dimension Scores',
+                                data: Object.values(data.dimensionScores),
+                                backgroundColor: colors.dimension.bg,
+                                borderColor: colors.dimension.border,
+                                borderWidth: 1
+                            }]
+                        };
+                        
+                    case 'topicDistribution':
+                        return {
+                            labels: Object.keys(data.topicDistribution),
+                            datasets: [{
+                                label: 'Topic Distribution',
+                                data: Object.values(data.topicDistribution),
+                                backgroundColor: colors.topic.bg,
+                                borderColor: colors.topic.border,
+                                borderWidth: 1
+                            }]
+                        };
+                        
+                    case 'scoreDistribution':
+                        return {
+                            labels: Object.keys(data.scoreDistribution),
+                            datasets: [{
+                                label: 'Score Distribution',
+                                data: Object.values(data.scoreDistribution),
+                                backgroundColor: colors.score.bg,
+                                borderColor: colors.score.border,
+                                borderWidth: 1
+                            }]
+                        };
+                        
+                    default:
+                        throw new Error('Invalid chart type');
+                }
+
+            } catch (error) {
+                console.error('Error preparing chart data:', error);
+                throw new Error('Failed to prepare chart data: ' + error.message);
             }
         }
 
         // Get chart options based on type
         function getChartOptions(dataType) {
-            const isDarkTheme = document.documentElement.getAttribute('data-bs-theme') === 'dark';
-            const textColor = isDarkTheme ? '#f8f9fa' : '#212529';
-            
-            const baseOptions = {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 5,
-                        ticks: {
-                            stepSize: 0.5,
-                            color: textColor
-                        },
-                        grid: {
-                            color: isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: textColor
-                        },
-                        grid: {
-                            color: isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: textColor
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: (context) => {
-                                const label = context.dataset.label || '';
-                                const value = context.parsed.y.toFixed(2);
-                                return `${label}: ${value}`;
-                            }
-                        }
-                    }
+            try {
+                if (!dataType) {
+                    throw new Error('Chart type not specified');
                 }
-            };
 
-            switch(dataType) {
-                case 'dimensionScores':
-                    return baseOptions;
-                case 'topicDistribution':
-                    return {
-                        ...baseOptions,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: Math.max(...Object.values(generateTopicData())),
-                                ticks: {
-                                    stepSize: 1
+                const isDarkTheme = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+                const textColor = isDarkTheme ? '#f8f9fa' : '#212529';
+                const gridColor = isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                
+                const baseOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 750,
+                        easing: 'easeInOutQuart'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: textColor,
+                                precision: 0
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: textColor
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: textColor,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y.toFixed(2);
+                                    return `${label}: ${value}`;
                                 }
                             }
                         }
-                    };
-                case 'scoreDistribution':
-                    return {
-                        ...baseOptions,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: Math.max(...Object.values(generateScoreData())),
-                                ticks: {
-                                    stepSize: 1
+                    }
+                };
+
+                switch(dataType) {
+                    case 'dimensionScores':
+                        return {
+                            ...baseOptions,
+                            scales: {
+                                ...baseOptions.scales,
+                                y: {
+                                    ...baseOptions.scales.y,
+                                    max: 5,
+                                    ticks: {
+                                        ...baseOptions.scales.y.ticks,
+                                        stepSize: 0.5
+                                    }
                                 }
                             }
-                        }
-                    };
+                        };
+                        
+                    case 'topicDistribution':
+                    case 'scoreDistribution':
+                        return {
+                            ...baseOptions,
+                            scales: {
+                                ...baseOptions.scales,
+                                y: {
+                                    ...baseOptions.scales.y,
+                                    ticks: {
+                                        ...baseOptions.scales.y.ticks,
+                                        stepSize: 1
+                                    }
+                                }
+                            }
+                        };
+                        
+                    default:
+                        throw new Error('Invalid chart type');
+                }
+
+            } catch (error) {
+                console.error('Error getting chart options:', error);
+                throw new Error('Failed to get chart options: ' + error.message);
             }
         }
 
-        // Add this after your other event listeners
+        // Chart type selection handler
         document.querySelectorAll('[data-chart]').forEach(button => {
             button.addEventListener('click', (e) => {
-                currentDataType = e.target.dataset.chart;
-                document.getElementById('currentChartTitle').textContent = 
-                    currentDataType.replace(/([A-Z])/g, ' $1').trim();
-                if (currentData) {
-                    updateMainChart(currentData, document.getElementById('chartTypeSelector').value);
+                try {
+                    const chartType = e.target.dataset.chart;
+                    if (!chartType) {
+                        throw new Error('Chart type not specified');
+                    }
+
+                    currentDataType = chartType;
+                    
+                    const titleElement = document.getElementById('currentChartTitle');
+                    if (titleElement) {
+                        titleElement.textContent = chartType.replace(/([A-Z])/g, ' $1').trim();
+                    }
+
+                    if (currentData) {
+                        const chartTypeSelector = document.getElementById('chartTypeSelector');
+                        if (!chartTypeSelector) {
+                            throw new Error('Chart type selector not found');
+                        }
+                        updateMainChart(currentData, chartTypeSelector.value);
+                    }
+
+                } catch (error) {
+                    console.error('Error handling chart selection:', error);
+                    alert('Failed to update chart selection. Please try again.');
                 }
             });
         });
@@ -1043,105 +1175,134 @@
                 throw new Error('Required UI elements not found');
             }
 
+            // Reset UI state
             loadingSpinner.style.display = 'block';
             resultsSection.style.display = 'none';
             progressBar.style.width = '0%';
             progressBar.textContent = '0%';
             progressBar.setAttribute('aria-valuenow', '0');
 
-            // Simulate progress
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += 5;
-                if (progress <= 100) {
+            let progressInterval;
+            try {
+                // Simulate progress
+                let progress = 0;
+                progressInterval = setInterval(() => {
+                    progress = Math.min(progress + 5, 95); // Cap at 95% until complete
                     progressBar.style.width = `${progress}%`;
                     progressBar.textContent = `${progress}%`;
                     progressBar.setAttribute('aria-valuenow', progress.toString());
-                }
-            }, 100);
+                }, 100);
 
-            try {
-                // Simulate processing time
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                // Validate participant count
+                if (!Number.isInteger(participantCount) || participantCount < 10 || participantCount > 10000) {
+                    throw new Error('Invalid participant count. Must be between 10 and 10000.');
+                }
+
+                // Simulate processing time with exponential backoff
+                const simulationDelay = Math.min(2000 + Math.floor(participantCount / 100) * 500, 5000);
+                await new Promise(resolve => setTimeout(resolve, simulationDelay));
                 
                 const results = await simulateExperiment(participantCount);
-                if (!results) {
-                    throw new Error('Simulation returned no results');
+                if (!results || typeof results !== 'object') {
+                    throw new Error('Invalid simulation results');
                 }
 
                 currentData = results;
-                displayResults(results);
-            } catch (error) {
-                throw error;
-            } finally {
-                clearInterval(progressInterval);
-                loadingSpinner.style.display = 'none';
+                await displayResults(results);
+
+                // Complete progress bar
                 progressBar.style.width = '100%';
                 progressBar.textContent = '100%';
                 progressBar.setAttribute('aria-valuenow', '100');
+
+                return results;
+
+            } catch (error) {
+                console.error('Simulation error:', error);
+                alert(`Simulation failed: ${error.message}`);
+                throw error;
+            } finally {
+                if (progressInterval) {
+                    clearInterval(progressInterval);
+                }
+                loadingSpinner.style.display = 'none';
             }
         }
 
         // Theme management
         function initializeTheme() {
             try {
-                const savedTheme = localStorage.getItem('theme') || 'light';
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const savedTheme = localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light');
+                
                 if (!['light', 'dark'].includes(savedTheme)) {
                     throw new Error('Invalid theme value');
                 }
+
                 document.documentElement.setAttribute('data-bs-theme', savedTheme);
                 updateThemeIcon(savedTheme);
+                updateUITheme(savedTheme);
+
             } catch (error) {
                 console.error('Error initializing theme:', error);
-                // Fallback to light theme
-                document.documentElement.setAttribute('data-bs-theme', 'light');
-                updateThemeIcon('light');
+                // Fallback to light theme if there's an error loading saved theme
+                // This ensures a consistent default experience
+                console.warn('Falling back to light theme due to error:', error.message);
+                const fallbackTheme = 'light';
+                document.documentElement.setAttribute('data-bs-theme', fallbackTheme);
+                updateThemeIcon(fallbackTheme);
+                updateUITheme(fallbackTheme);
             }
         }
 
         function toggleTheme() {
             try {
                 const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-                if (!currentTheme) {
-                    throw new Error('Current theme not found');
+                if (!currentTheme || !['light', 'dark'].includes(currentTheme)) {
+                    throw new Error('Invalid current theme');
                 }
 
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
+                // Update theme
                 document.documentElement.setAttribute('data-bs-theme', newTheme);
                 localStorage.setItem('theme', newTheme);
                 updateThemeIcon(newTheme);
+                updateUITheme(newTheme);
                 
-                // Update chart themes if they exist
-                const charts = {
-                    dimension: { chart: dimensionChart, type: 'dimensionScores' },
-                    topic: { chart: topicChart, type: 'topicDistribution' },
-                    score: { chart: scoreChart, type: 'scoreDistribution' }
-                };
+                // Update charts
+                const charts = [
+                    { instance: dimensionChart, type: 'dimensionScores' },
+                    { instance: topicChart, type: 'topicDistribution' },
+                    { instance: scoreChart, type: 'scoreDistribution' }
+                ];
 
-                Object.entries(charts).forEach(([name, {chart, type}]) => {
-                    if (chart && typeof chart.update === 'function') {
+                charts.forEach(({instance, type}) => {
+                    if (instance?.update) {
                         try {
-                            chart.options = getChartOptions(type);
-                            chart.update();
+                            instance.options = getChartOptions(type);
+                            instance.update('none'); // Update without animation
                         } catch (error) {
-                            console.error(`Error updating ${name} chart:`, error);
+                            console.error(`Error updating chart for ${type}:`, error);
                         }
                     }
                 });
 
+                // Update main chart if data exists
                 if (currentData) {
                     const chartTypeSelector = document.getElementById('chartTypeSelector');
-                    if (chartTypeSelector && chartTypeSelector.value) {
+                    if (chartTypeSelector?.value) {
                         updateMainChart(currentData, chartTypeSelector.value);
                     }
                 }
 
-                updateUITheme(newTheme);
             } catch (error) {
                 console.error('Error toggling theme:', error);
-                document.documentElement.setAttribute('data-bs-theme', 'light');
-                updateThemeIcon('light');
+                // Fallback to light theme
+                const fallbackTheme = 'light';
+                document.documentElement.setAttribute('data-bs-theme', fallbackTheme);
+                updateThemeIcon(fallbackTheme);
+                updateUITheme(fallbackTheme);
             }
         }
 
@@ -1149,10 +1310,13 @@
             try {
                 const icon = document.getElementById('themeIcon');
                 if (!icon) {
-                    console.warn('Theme icon element not found');
-                    return;
+                    throw new Error('Theme icon element not found');
                 }
+                
+                // Update icon class and aria-label
                 icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+                icon.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
+                
             } catch (error) {
                 console.error('Error updating theme icon:', error);
             }
@@ -1160,14 +1324,33 @@
 
         function updateUITheme(theme) {
             try {
-                // Update any additional theme-dependent styles
+                if (!['light', 'dark'].includes(theme)) {
+                    throw new Error('Invalid theme value');
+                }
+
                 const root = document.documentElement;
-                root.style.setProperty('--chart-grid-color', 
-                    theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)');
-                root.style.setProperty('--chart-text-color',
-                    theme === 'dark' ? '#f8f9fa' : '#212529');
+                const isDark = theme === 'dark';
+
+                // Update CSS variables for theme
+                const themeColors = {
+                    chartGrid: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                    chartText: isDark ? '#f8f9fa' : '#212529',
+                    chartBackground: isDark ? '#343a40' : '#ffffff',
+                    borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                };
+
+                Object.entries(themeColors).forEach(([key, value]) => {
+                    root.style.setProperty(`--${key}`, value);
+                });
+
             } catch (error) {
                 console.error('Error updating UI theme:', error);
+                // Fallback to light theme values
+                const root = document.documentElement;
+                root.style.setProperty('--chartGrid', 'rgba(0, 0, 0, 0.1)');
+                root.style.setProperty('--chartText', '#212529');
+                root.style.setProperty('--chartBackground', '#ffffff');
+                root.style.setProperty('--borderColor', 'rgba(0, 0, 0, 0.1)');
             }
         }
     </script>
