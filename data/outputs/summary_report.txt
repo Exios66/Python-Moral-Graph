@@ -1,0 +1,38 @@
+Experiment Summary Report
+=======================
+
+Overall Statistics:
+-----------------
+count    200.000000
+mean       3.050500
+std        0.525625
+min        1.850000
+25%        2.700000
+50%        3.050000
+75%        3.400000
+max        4.350000
+Name: TotalWeightedScore, dtype: float64
+
+Average Scores by Topic:
+----------------------
+Specialization
+Economics and Business                            3.115217
+Health and Medicine                               3.002273
+Humanities (History, Philosophy, Literature)      3.069565
+Mathematics and Logic                             3.074359
+Natural Sciences (Physics, Chemistry, Biology)    2.953125
+Psychology and Behavioral Sciences                3.085417
+Sociology and Anthropology                        2.960417
+Technology and Computer Science                   3.087931
+Name: TotalWeightedScore, dtype: float64
+
+Average Dimension Scores:
+-----------------------
+Ethical Alignment: 2.92
+Empathy and Emotional Intelligence: 3.08
+Accuracy and Reliability: 3.12
+Engagement and Responsiveness: 3.09
+Cultural Sensitivity: 3.01
+Conflict Resolution and Problem-Solving: 3.16
+Privacy and Confidentiality: 3.00
+Adaptability and Learning: 3.06

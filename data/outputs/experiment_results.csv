@@ -1,0 +1,201 @@
+ParticipantID,ChatbotID,Specialization,AssignmentType,TotalWeightedScore,Ethical Alignment,Empathy and Emotional Intelligence,Accuracy and Reliability,Engagement and Responsiveness,Cultural Sensitivity,Conflict Resolution and Problem-Solving,Privacy and Confidentiality,Adaptability and Learning
+P0001,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,3.0,4,4,1,2,5,1,4,4
+P0001,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,3.4000000000000004,4,2,5,1,5,3,2,4
+P0002,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",strength,2.25,1,2,4,1,1,3,4,1
+P0002,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,weakness,2.8,5,1,1,3,4,5,2,1
+P0003,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,2.45,1,4,3,3,1,4,2,1
+P0003,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,3.15,5,2,1,5,3,4,2,5
+P0004,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",strength,3.9499999999999997,4,2,5,4,3,4,5,5
+P0004,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,2.85,4,2,3,1,4,4,1,3
+P0005,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,2.85,5,1,2,1,5,5,1,2
+P0005,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,3.9,4,3,3,4,5,4,5,5
+P0006,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,3.35,2,4,5,4,1,2,5,3
+P0006,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,2.4500000000000006,3,1,1,3,4,1,5,4
+P0007,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,2.95,2,5,2,5,2,1,5,2
+P0007,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.15,1,3,1,2,5,2,2,4
+P0008,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,2.5500000000000003,5,1,1,3,1,2,4,4
+P0008,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,weakness,3.1000000000000005,4,3,5,1,2,1,2,5
+P0009,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,3.3499999999999996,2,4,5,3,4,1,3,5
+P0009,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,3.8,3,5,5,1,5,3,5,1
+P0010,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,3.25,2,4,2,5,5,5,2,3
+P0010,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,2.5500000000000007,1,5,2,5,2,2,2,2
+P0011,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,2.8500000000000005,3,2,3,3,2,3,5,1
+P0011,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,3.1,5,1,3,4,3,2,3,3
+P0012,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,2.65,1,2,1,5,5,3,5,3
+P0012,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,3.55,5,4,2,4,4,2,3,5
+P0013,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,2.6,1,5,3,1,2,4,2,3
+P0013,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,3.0500000000000003,1,2,4,4,1,5,5,5
+P0014,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,strength,3.5500000000000003,5,1,5,3,5,3,1,4
+P0014,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.1500000000000004,2,1,3,1,1,3,3,4
+P0015,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,2.1500000000000004,1,4,2,2,1,1,5,1
+P0015,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,2.3499999999999996,1,2,1,5,4,2,5,1
+P0016,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,2.4,2,1,3,2,3,1,5,3
+P0016,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,3.9499999999999997,4,5,5,5,3,4,1,2
+P0017,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,2.3000000000000003,2,3,4,1,1,2,1,3
+P0017,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,2.7000000000000006,3,2,3,4,4,1,2,2
+P0018,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,2.9000000000000004,3,3,2,3,4,5,1,3
+P0018,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,weakness,3.7000000000000006,4,2,5,2,5,3,4,4
+P0019,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,3.0500000000000003,1,3,5,5,2,1,4,4
+P0019,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,3.15,5,3,1,4,3,2,5,2
+P0020,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,3.6999999999999997,1,5,5,5,3,4,4,3
+P0020,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,3.4500000000000006,3,4,5,5,1,2,3,3
+P0021,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,4.2,5,4,5,5,3,1,5,4
+P0021,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,3.2,5,2,3,2,1,5,3,4
+P0022,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,3.6,4,5,4,1,1,4,4,5
+P0022,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,2.5500000000000003,1,4,2,2,4,3,3,3
+P0023,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,2.65,2,2,4,4,2,4,1,1
+P0023,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,3.85,5,5,4,2,2,3,4,4
+P0024,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,3.9000000000000004,5,5,2,5,2,3,5,5
+P0024,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,2.15,1,3,2,1,2,5,2,2
+P0025,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,strength,2.5500000000000003,5,3,1,3,2,1,2,2
+P0025,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,2.65,1,2,2,5,4,5,1,5
+P0026,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,2.8999999999999995,1,5,3,5,3,1,4,1
+P0026,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,3.150000000000001,4,3,3,3,1,3,4,4
+P0027,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,2.7,2,5,1,1,4,1,5,5
+P0027,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,2.7500000000000004,5,4,1,3,3,2,1,1
+P0028,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,2.6,1,3,2,4,3,4,2,5
+P0028,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.8000000000000003,1,4,4,1,3,5,2,2
+P0029,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,2.4500000000000006,3,2,3,4,2,1,1,3
+P0029,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,2.5500000000000007,2,1,3,3,1,3,5,4
+P0030,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,3.75,4,2,5,3,3,4,4,5
+P0030,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.9500000000000006,2,5,5,1,1,2,2,4
+P0031,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,3.65,4,4,4,1,4,4,4,3
+P0031,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,2.1999999999999997,2,1,1,5,2,3,3,3
+P0032,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,strength,2.7500000000000004,2,5,4,1,2,2,2,2
+P0032,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,weakness,2.2,3,1,2,1,4,4,1,1
+P0033,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,3.8500000000000005,4,5,3,5,1,4,5,4
+P0033,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,3.2500000000000004,3,2,5,3,2,4,3,3
+P0034,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,strength,3.4,2,4,5,2,3,3,5,2
+P0034,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.5000000000000004,3,2,1,5,3,3,1,4
+P0035,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,2.0500000000000003,1,1,2,3,2,2,4,4
+P0035,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,2.7500000000000004,5,1,2,4,3,2,1,4
+P0036,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",strength,3.1,4,4,2,5,3,2,2,2
+P0036,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,weakness,2.9499999999999997,4,4,1,5,2,1,5,1
+P0037,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,2.95,2,4,3,2,2,2,5,5
+P0037,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,3.9000000000000004,3,5,5,3,5,4,3,1
+P0038,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,2.6500000000000004,4,1,3,2,3,4,1,2
+P0038,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,2.5,2,1,4,2,2,5,1,3
+P0039,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,2.8000000000000003,4,1,2,5,2,5,2,1
+P0039,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,2.9,4,1,4,3,3,1,2,5
+P0040,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,3.25,5,5,1,1,5,2,3,4
+P0040,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,2.8000000000000003,2,2,5,4,1,1,4,2
+P0041,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,2.15,1,3,1,3,5,1,3,2
+P0041,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,3.2500000000000004,2,3,3,3,3,5,5,4
+P0042,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,2.5,1,5,1,1,5,4,2,3
+P0042,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.9500000000000006,5,2,2,1,3,4,2,5
+P0043,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,3.0,5,5,1,1,2,4,2,3
+P0043,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,3.1,2,5,2,4,3,4,2,5
+P0044,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,3.45,5,3,3,1,4,5,2,4
+P0044,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,3.6500000000000004,4,3,5,4,5,1,2,4
+P0045,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,2.2,1,2,2,5,2,4,1,2
+P0045,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,3.3000000000000003,2,2,5,5,5,4,1,2
+P0046,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,2.7500000000000004,3,2,2,3,4,4,1,5
+P0046,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,2.900000000000001,3,2,4,2,4,2,3,2
+P0047,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,strength,3.4,5,3,4,4,1,2,3,3
+P0047,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,3.1499999999999995,2,4,2,5,4,3,3,5
+P0048,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,2.55,1,4,1,1,5,5,4,1
+P0048,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,2.75,2,4,3,2,2,4,3,1
+P0049,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,2.6500000000000004,1,4,4,4,1,3,1,3
+P0049,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,3.0500000000000007,5,5,1,3,2,1,3,4
+P0050,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,3.3500000000000005,2,4,3,3,4,3,5,5
+P0050,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,3.4000000000000004,3,4,4,4,3,4,1,4
+P0051,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,2.6499999999999995,4,4,2,3,3,1,1,1
+P0051,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,4.249999999999999,5,5,4,4,4,5,3,2
+P0052,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",strength,2.75,1,1,5,2,5,3,2,4
+P0052,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,2.85,1,4,3,3,2,4,5,1
+P0053,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,3.5,4,3,2,5,3,5,5,1
+P0053,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,2.5,3,1,2,1,5,3,4,1
+P0054,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,3.4000000000000004,2,3,5,3,2,4,4,5
+P0054,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,3.4,4,3,2,4,4,5,3,3
+P0055,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,2.8000000000000003,1,4,3,5,2,1,4,4
+P0055,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,3.5,5,2,5,3,5,1,2,2
+P0056,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,2.1000000000000005,1,4,3,1,1,3,1,2
+P0056,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.85,5,1,2,1,5,4,1,4
+P0057,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,2.6,1,3,1,5,4,2,4,5
+P0057,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,2.65,2,3,2,4,1,3,5,2
+P0058,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,3.5,2,5,4,3,2,4,4,5
+P0058,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.9000000000000004,2,1,3,3,4,3,5,5
+P0059,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,strength,3.0,3,1,3,3,2,5,4,5
+P0059,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,2.65,1,2,4,4,1,4,4,1
+P0060,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,3.3499999999999996,4,4,3,4,4,4,1,1
+P0060,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,weakness,1.95,2,1,2,1,2,1,4,4
+P0061,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,3.2,4,2,3,3,3,5,2,4
+P0061,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,4.0,5,5,3,3,3,5,5,1
+P0062,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,3.5999999999999996,5,3,3,5,1,4,3,5
+P0062,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,2.8500000000000005,3,2,3,3,2,3,3,5
+P0063,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,2.1000000000000005,3,2,2,4,1,1,1,2
+P0063,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,weakness,3.5,4,5,4,1,4,4,1,3
+P0064,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,3.1500000000000004,4,1,4,5,1,3,4,2
+P0064,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,3.8500000000000005,4,5,3,5,4,2,5,2
+P0065,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,2.4500000000000006,2,1,2,4,3,5,1,4
+P0065,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,3.2,3,2,5,1,4,5,1,4
+P0066,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,3.75,5,5,2,5,1,5,4,2
+P0066,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.35,4,2,1,2,2,2,3,3
+P0067,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,3.85,4,5,2,4,5,4,5,2
+P0067,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.95,5,2,2,2,4,2,4,1
+P0068,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",strength,3.85,4,4,5,3,4,2,4,3
+P0068,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,3.7500000000000004,2,5,4,5,5,2,5,2
+P0069,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,strength,2.55,1,2,5,2,2,4,1,3
+P0069,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,3.0,5,1,2,5,5,1,1,5
+P0070,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,strength,3.1000000000000005,5,2,3,4,2,1,3,4
+P0070,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,weakness,3.0500000000000003,3,2,4,5,5,2,1,1
+P0071,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,2.7,4,5,1,1,4,1,2,3
+P0071,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,3.4000000000000004,5,2,3,3,3,4,3,4
+P0072,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",strength,3.0500000000000007,2,5,5,3,1,1,2,4
+P0072,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,3.35,3,2,5,3,5,3,1,5
+P0073,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,2.8000000000000003,4,2,3,3,4,2,1,2
+P0073,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,3.1999999999999997,1,5,3,2,3,5,4,5
+P0074,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,2.25,3,4,1,2,3,1,2,1
+P0074,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,weakness,3.1,2,3,5,4,5,1,1,3
+P0075,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,strength,2.9499999999999997,5,1,2,2,3,3,5,2
+P0075,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,2.1,1,2,3,4,2,1,2,2
+P0076,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",strength,2.55,3,2,3,2,2,1,5,1
+P0076,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,2.7,2,4,1,4,3,3,4,2
+P0077,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,2.5500000000000007,4,1,3,3,1,3,2,2
+P0077,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,3.3500000000000005,4,5,2,2,5,5,1,2
+P0078,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,3.2499999999999996,4,4,2,5,5,3,1,1
+P0078,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,weakness,3.4,5,3,3,1,3,3,5,3
+P0079,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,2.3000000000000003,1,4,1,5,3,1,3,2
+P0079,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,3.3500000000000005,5,4,4,1,1,4,3,1
+P0080,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",strength,3.7500000000000004,5,3,4,4,5,2,2,4
+P0080,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.4500000000000006,2,1,4,1,4,3,1,4
+P0081,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,3.25,4,2,2,4,5,2,5,3
+P0081,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,3.0,2,1,3,4,5,4,5,1
+P0082,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,2.1000000000000005,3,4,1,1,1,2,2,2
+P0082,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,4.0,5,5,3,2,2,5,5,5
+P0083,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",strength,3.1999999999999997,5,1,4,3,2,3,3,3
+P0083,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,2.8000000000000003,1,2,4,2,2,5,4,4
+P0084,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,strength,3.2,1,5,4,5,2,5,1,3
+P0084,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,3.3500000000000005,4,5,5,1,1,1,3,4
+P0085,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,3.4000000000000004,4,4,4,2,3,3,2,4
+P0085,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,weakness,3.1,3,1,4,5,2,4,4,1
+P0086,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,2.1000000000000005,1,4,2,5,1,1,1,2
+P0086,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,2.5500000000000003,1,1,4,3,4,3,3,2
+P0087,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,strength,2.3,1,2,2,5,4,3,1,2
+P0087,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,3.7500000000000004,4,5,5,1,2,3,4,4
+P0088,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,3.4999999999999996,4,4,2,5,4,4,3,2
+P0088,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,weakness,3.1,3,3,5,5,1,2,1,3
+P0089,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,2.2,4,1,3,1,2,2,1,1
+P0089,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,2.4,1,1,2,4,5,4,2,3
+P0090,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,3.0500000000000003,3,5,2,2,2,5,3,2
+P0090,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,weakness,3.35,4,4,1,3,5,2,5,5
+P0091,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,strength,2.6000000000000005,3,3,3,2,3,2,2,1
+P0091,7796a890-1271-47e3-b2c9-eddebe58324b,"Humanities (History, Philosophy, Literature)",weakness,2.8000000000000003,1,2,4,2,1,5,5,4
+P0092,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,3.2000000000000006,4,4,4,4,2,1,2,2
+P0092,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",weakness,2.3,2,1,1,5,3,2,4,3
+P0093,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,2.0,1,3,1,5,3,1,1,3
+P0093,9fc0793a-b1fc-46c0-a13f-d69388462faf,Technology and Computer Science,weakness,2.4000000000000004,4,1,1,3,1,5,2,3
+P0094,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,2.5999999999999996,1,3,1,5,3,4,3,5
+P0094,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,4.05,5,5,3,5,1,5,4,4
+P0095,0fc6b43f-9cdf-43ea-8863-5657ef96e8f1,"Natural Sciences (Physics, Chemistry, Biology)",strength,2.7,1,2,3,5,5,1,4,2
+P0095,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,3.2,5,5,1,3,5,1,2,3
+P0096,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,2.8000000000000007,3,3,3,1,1,5,2,5
+P0096,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.45,1,2,3,4,2,4,2,3
+P0097,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,3.3999999999999995,4,3,4,1,5,4,3,1
+P0097,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,2.1,1,2,4,1,1,2,3,2
+P0098,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,strength,2.35,1,5,3,2,2,1,2,2
+P0098,261d2b3c-d826-4ae1-ba6a-f7020cd32bf4,Health and Medicine,weakness,2.4499999999999997,2,2,1,3,5,3,4,1
+P0099,2086511d-4f09-4693-aa6a-081984d2fad9,Economics and Business,strength,3.4500000000000006,5,4,4,5,2,2,1,1
+P0099,2ce095f7-2565-4a05-af2a-46a0b732190a,Mathematics and Logic,weakness,3.3500000000000005,4,2,4,4,5,1,2,5
+P0100,6958fb83-92db-44e6-9a5c-30fa8a7c0095,Sociology and Anthropology,strength,2.7,2,1,3,4,4,2,4,3
+P0100,7409711f-8d6d-4b19-ae43-ed38854665a4,Psychology and Behavioral Sciences,weakness,1.9000000000000001,3,3,1,2,1,2,1,1
