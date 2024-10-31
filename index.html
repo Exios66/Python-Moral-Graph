@@ -203,63 +203,43 @@
         <section id="results" class="results-section mb-5" style="display: none;">
             <h2>Simulation Results</h2>
             
-            <!-- Add dropdown for chart selection -->
-            <div class="mb-4">
-                <select class="form-select" id="chartTypeSelector">
-                    <option value="bar">Bar Chart</option>
-                    <option value="line">Line Chart</option>
-                    <option value="radar">Radar Chart</option>
-                    <option value="pie">Pie Chart</option>
-                </select>
+            <!-- Chart Controls -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="chartTypeSelector" class="form-label">Chart Type</label>
+                    <select class="form-select" id="chartTypeSelector">
+                        <option value="bar">Bar Chart</option>
+                        <option value="line">Line Chart</option>
+                        <option value="radar">Radar Chart</option>
+                        <option value="pie">Pie Chart</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="dataUpload" class="form-label">Upload Custom Data</label>
+                    <input type="file" class="form-control" id="dataUpload" accept=".csv,.json">
+                    <small class="text-muted">Supported formats: CSV, JSON</small>
+                </div>
             </div>
 
+            <!-- Charts Container -->
             <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
+                <div class="col-12">
+                    <div class="card mb-4">
                         <div class="card-body">
-                            <h5 class="card-title">Overall Statistics</h5>
-                            <div class="table-responsive">
-                                <table class="table table-striped" id="overall-stats">
-                                    <!-- Populated by JavaScript -->
-                                </table>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title" id="currentChartTitle">Analysis Results</h5>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-outline-primary" data-chart="dimensionScores">Dimension Scores</button>
+                                    <button type="button" class="btn btn-outline-primary" data-chart="topicDistribution">Topic Distribution</button>
+                                    <button type="button" class="btn btn-outline-primary" data-chart="scoreDistribution">Score Distribution</button>
+                                </div>
+                            </div>
+                            <div class="chart-container" style="position: relative; height:50vh;">
+                                <canvas id="mainChart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Dimension Scores</h5>
-                            <canvas id="dimensionScoresChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Topic Distribution</h5>
-                            <canvas id="topicDistributionChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Score Distribution</h5>
-                            <canvas id="scoreDistributionChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-4">
-                <button type="button" class="btn btn-success" id="downloadResults">
-                    <i class="bi bi-download me-2"></i>Download Results (CSV)
-                </button>
-                <button type="button" class="btn btn-primary ms-2" id="runNewSimulation">
-                    <i class="bi bi-arrow-repeat me-2"></i>Run New Simulation
-                </button>
             </div>
         </section>
     </div>
@@ -429,10 +409,10 @@
         // Results display with error handling
         async function displayResults(data) {
             try {
-                await Promise.all([
-                    updateResultsTable(data),
-                    updateCharts(data)
-                ]);
+                currentData = data;
+                updateResultsTable(data);
+                updateMainChart(data, document.getElementById('chartTypeSelector').value);
+                document.querySelector('.results-section').style.display = 'block';
             } catch (error) {
                 console.error('Error displaying results:', error);
                 throw error;
@@ -672,6 +652,194 @@
 
         // Initialize UI on load
         document.addEventListener('DOMContentLoaded', initializeUI);
+
+        // Add these to your existing script section
+        let currentData = null;
+        let currentChart = null;
+        let currentDataType = 'dimensionScores';
+
+        // File upload handler
+        document.getElementById('dataUpload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                const data = await parseUploadedFile(file);
+                displayResults(data);
+            } catch (error) {
+                console.error('Error parsing file:', error);
+                alert('Error parsing file. Please check the format and try again.');
+            }
+        });
+
+        // Parse uploaded file
+        async function parseUploadedFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                
+                reader.onload = async (e) => {
+                    try {
+                        if (file.name.endsWith('.csv')) {
+                            Papa.parse(e.target.result, {
+                                header: true,
+                                complete: (results) => {
+                                    resolve(processUploadedData(results.data));
+                                },
+                                error: reject
+                            });
+                        } else if (file.name.endsWith('.json')) {
+                            const data = JSON.parse(e.target.result);
+                            resolve(processUploadedData(data));
+                        } else {
+                            reject(new Error('Unsupported file format'));
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                
+                reader.onerror = () => reject(new Error('File reading failed'));
+                
+                if (file.name.endsWith('.csv')) {
+                    reader.readAsText(file);
+                } else {
+                    reader.readAsText(file);
+                }
+            });
+        }
+
+        // Process uploaded data
+        function processUploadedData(data) {
+            // Validate and format the uploaded data
+            const processedData = {
+                dimensionScores: {},
+                topicDistribution: {},
+                scoreDistribution: {}
+            };
+
+            // Add validation and processing logic based on your data structure
+            return processedData;
+        }
+
+        // Update chart display
+        function updateMainChart(data, chartType) {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            const chartData = prepareChartData(data, currentDataType);
+            
+            currentChart = new Chart(ctx, {
+                type: chartType,
+                data: chartData,
+                options: getChartOptions(currentDataType)
+            });
+        }
+
+        // Prepare chart data based on type
+        function prepareChartData(data, dataType) {
+            switch(dataType) {
+                case 'dimensionScores':
+                    return {
+                        labels: Object.keys(data.dimensionScores),
+                        datasets: [{
+                            label: 'Dimension Scores',
+                            data: Object.values(data.dimensionScores),
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    };
+                case 'topicDistribution':
+                    const topicData = generateTopicData();
+                    return {
+                        labels: topicData.map(t => t.topic),
+                        datasets: [{
+                            label: 'Topic Distribution',
+                            data: topicData.map(t => t.count),
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    };
+                case 'scoreDistribution':
+                    const scoreData = generateScoreData();
+                    return {
+                        labels: Object.keys(scoreData),
+                        datasets: [{
+                            label: 'Score Distribution',
+                            data: Object.values(scoreData),
+                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    };
+            }
+        }
+
+        // Get chart options based on type
+        function getChartOptions(dataType) {
+            const baseOptions = {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5,
+                        ticks: {
+                            stepSize: 0.5
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                const label = context.dataset.label || '';
+                                const value = context.parsed.y.toFixed(2);
+                                return `${label}: ${value}`;
+                            }
+                        }
+                    }
+                }
+            };
+
+            switch(dataType) {
+                case 'dimensionScores':
+                    return baseOptions;
+                case 'topicDistribution':
+                    return {
+                        ...baseOptions,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: Math.max(...Object.values(generateTopicData())),
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    };
+                case 'scoreDistribution':
+                    return {
+                        ...baseOptions,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: Math.max(...Object.values(generateScoreData())),
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    };
+            }
+        }
     </script>
 </body>
 </html>
