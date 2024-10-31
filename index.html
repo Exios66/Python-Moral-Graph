@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Psychology Experiment Simulator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <style>
         .dimension-card {
             margin-bottom: 1rem;
@@ -33,6 +34,40 @@
             0%, 100% { transform: rotate(0) }
             20%, 60% { transform: rotate(-25deg) }
             40%, 80% { transform: rotate(10deg) }
+        }
+        :root {
+            --bs-body-bg: #ffffff;
+            --bs-body-color: #212529;
+            --card-bg: #ffffff;
+            --card-border: rgba(0,0,0,.125);
+        }
+
+        [data-bs-theme="dark"] {
+            --bs-body-bg: #212529;
+            --bs-body-color: #f8f9fa;
+            --card-bg: #343a40;
+            --card-border: rgba(255,255,255,.125);
+        }
+
+        body {
+            background-color: var(--bs-body-bg);
+            color: var(--bs-body-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-color: var(--card-border);
+            transition: background-color 0.3s ease;
+        }
+
+        /* Theme toggle button animation */
+        #themeToggle {
+            transition: transform 0.3s ease;
+        }
+
+        #themeToggle:hover {
+            transform: rotate(45deg);
         }
     </style>
 </head>
@@ -64,6 +99,11 @@
                         <a class="nav-link" href="#results">Results</a>
                     </li>
                 </ul>
+            </div>
+            <div class="navbar-nav ms-auto">
+                <button class="btn btn-outline-light" id="themeToggle" aria-label="Toggle dark/light theme">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
             </div>
         </div>
     </nav>
@@ -790,6 +830,9 @@
 
         // Get chart options based on type
         function getChartOptions(dataType) {
+            const isDarkTheme = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+            const textColor = isDarkTheme ? '#f8f9fa' : '#212529';
+            
             const baseOptions = {
                 responsive: true,
                 scales: {
@@ -797,14 +840,29 @@
                         beginAtZero: true,
                         max: 5,
                         ticks: {
-                            stepSize: 0.5
+                            stepSize: 0.5,
+                            color: textColor
+                        },
+                        grid: {
+                            color: isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: textColor
+                        },
+                        grid: {
+                            color: isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
                         }
                     }
                 },
                 plugins: {
                     legend: {
                         display: true,
-                        position: 'top'
+                        position: 'top',
+                        labels: {
+                            color: textColor
+                        }
                     },
                     tooltip: {
                         callbacks: {
@@ -967,6 +1025,12 @@
                     }
                 });
             }
+
+            // Initialize theme
+            initializeTheme();
+
+            // Add theme toggle listener
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
         });
 
         // Handle simulation running
@@ -1015,6 +1079,95 @@
                 progressBar.style.width = '100%';
                 progressBar.textContent = '100%';
                 progressBar.setAttribute('aria-valuenow', '100');
+            }
+        }
+
+        // Theme management
+        function initializeTheme() {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                if (!['light', 'dark'].includes(savedTheme)) {
+                    throw new Error('Invalid theme value');
+                }
+                document.documentElement.setAttribute('data-bs-theme', savedTheme);
+                updateThemeIcon(savedTheme);
+            } catch (error) {
+                console.error('Error initializing theme:', error);
+                // Fallback to light theme
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+                updateThemeIcon('light');
+            }
+        }
+
+        function toggleTheme() {
+            try {
+                const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+                if (!currentTheme) {
+                    throw new Error('Current theme not found');
+                }
+
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+                
+                // Update chart themes if they exist
+                const charts = {
+                    dimension: { chart: dimensionChart, type: 'dimensionScores' },
+                    topic: { chart: topicChart, type: 'topicDistribution' },
+                    score: { chart: scoreChart, type: 'scoreDistribution' }
+                };
+
+                Object.entries(charts).forEach(([name, {chart, type}]) => {
+                    if (chart && typeof chart.update === 'function') {
+                        try {
+                            chart.options = getChartOptions(type);
+                            chart.update();
+                        } catch (error) {
+                            console.error(`Error updating ${name} chart:`, error);
+                        }
+                    }
+                });
+
+                if (currentData) {
+                    const chartTypeSelector = document.getElementById('chartTypeSelector');
+                    if (chartTypeSelector && chartTypeSelector.value) {
+                        updateMainChart(currentData, chartTypeSelector.value);
+                    }
+                }
+
+                updateUITheme(newTheme);
+            } catch (error) {
+                console.error('Error toggling theme:', error);
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+                updateThemeIcon('light');
+            }
+        }
+
+        function updateThemeIcon(theme) {
+            try {
+                const icon = document.getElementById('themeIcon');
+                if (!icon) {
+                    console.warn('Theme icon element not found');
+                    return;
+                }
+                icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            } catch (error) {
+                console.error('Error updating theme icon:', error);
+            }
+        }
+
+        function updateUITheme(theme) {
+            try {
+                // Update any additional theme-dependent styles
+                const root = document.documentElement;
+                root.style.setProperty('--chart-grid-color', 
+                    theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)');
+                root.style.setProperty('--chart-text-color',
+                    theme === 'dark' ? '#f8f9fa' : '#212529');
+            } catch (error) {
+                console.error('Error updating UI theme:', error);
             }
         }
     </script>
