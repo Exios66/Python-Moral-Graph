@@ -318,24 +318,28 @@
 
         // Simulation logic
         function simulateExperiment(participantCount) {
-            const results = {
-                dimensionScores: {},
-                totalParticipants: participantCount,
-                averageScore: 0,
-                completionRate: 98.5
-            };
-
-            let totalScore = 0;
-            DIMENSIONS.forEach(dim => {
-                // Simulate scores with some randomness but weighted towards better performance
-                const baseScore = 3.5 + (Math.random() * 1.5 - 0.5);
-                const weightedScore = Math.min(5, Math.max(1, baseScore));
-                results.dimensionScores[dim.name] = weightedScore;
-                totalScore += weightedScore * (dim.weight / 100);
+            // Initialize dimensions with their weights from DIMENSION_WEIGHTS
+            const dimensionScores = {};
+            
+            // Generate realistic scores for each dimension
+            Object.keys(DIMENSION_WEIGHTS).forEach(dimension => {
+                // Generate a score between 3.0 and 4.8 with some randomness
+                const baseScore = 3.0 + (Math.random() * 1.8);
+                dimensionScores[dimension] = parseFloat(baseScore.toFixed(2));
             });
 
-            results.averageScore = totalScore;
-            return results;
+            // Calculate overall statistics
+            const averageScore = Object.entries(dimensionScores)
+                .reduce((acc, [dim, score]) => {
+                    return acc + (score * DIMENSION_WEIGHTS[dim]);
+                }, 0);
+
+            return {
+                dimensionScores: dimensionScores,
+                totalParticipants: participantCount,
+                averageScore: parseFloat(averageScore.toFixed(2)),
+                completionRate: 98.5
+            };
         }
 
         // Form submission handler
@@ -347,16 +351,29 @@
             document.getElementById('loading-spinner').style.display = 'block';
             document.querySelector('.results-section').style.display = 'none';
 
-            // Simulate processing time
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Simulate progress
+            let progress = 0;
+            const progressBar = document.getElementById('simulation-progress');
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                if (progress <= 100) {
+                    progressBar.style.width = `${progress}%`;
+                    progressBar.textContent = `${progress}%`;
+                    progressBar.setAttribute('aria-valuenow', progress);
+                }
+            }, 100);
 
             try {
+                // Simulate processing time
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
                 const results = simulateExperiment(participantCount);
                 displayResults(results);
             } catch (error) {
                 console.error('Error:', error);
                 alert('Error running simulation. Please try again.');
             } finally {
+                clearInterval(progressInterval);
                 document.getElementById('loading-spinner').style.display = 'none';
                 document.querySelector('.results-section').style.display = 'block';
             }
