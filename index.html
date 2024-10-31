@@ -6,350 +6,590 @@
     <title>Psychology Experiment Simulator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            padding: 20px;
-            background-color: #f8f9fa;
+            background-color: #0C0C0C;
+            color: #E5E5E5;
+            font-family: 'JetBrains Mono', monospace;
         }
-        
-        .container {
-            background-color: white;
-            border-radius: 10px;
+        .cyberpunk-container {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            border-radius: 5px;
             padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin: 20px 0;
         }
-
-        .import-overlay {
-            display: none;
+        .cyberpunk-btn {
+            background-color: transparent;
+            border: 2px solid #00FF41;
+            color: #00FF41;
+            padding: 8px 16px;
+            transition: all 0.3s;
+        }
+        .cyberpunk-btn:hover {
+            background-color: #00FF41;
+            color: #0C0C0C;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background-color: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00FF41;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #loadingOverlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1001;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
-        
+        #importOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
         .import-dialog {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            max-width: 500px;
+            background-color: #1A1A1A;
+            border: 2px solid #00FF41;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
             width: 90%;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
-        
-        .import-preview {
+        #importPreview {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            padding: 10px;
+            margin: 10px 0;
             max-height: 200px;
             overflow-y: auto;
-            margin: 1rem 0;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 4px;
-            border: 1px solid #dee2e6;
+            font-size: 0.9em;
         }
-
-        .stats-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border: 1px solid #e9ecef;
-            height: 100%;
+        select.cyberpunk-select {
+            background-color: #1A1A1A;
+            border: 1px solid #00FF41;
+            color: #E5E5E5;
+            padding: 5px 10px;
         }
-
-        .stats-label {
-            color: #6c757d;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+        .chart-container {
+            height: 400px;
+            margin: 20px 0;
         }
-
-        .stats-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #0d6efd;
-        }
-
-        .btn {
-            transition: all 0.2s ease-in-out;
+        .chart-type-control {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .section-title {
-            color: #212529;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
+            gap: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Chart Controls -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <label for="chartTypeSelector" class="form-label">Chart Type</label>
-                <select class="form-select" id="chartTypeSelector">
-                    <option value="bar">Bar Chart</option>
-                    <option value="line">Line Chart</option>
-                    <option value="radar">Radar Chart</option>
-                    <option value="pie">Pie Chart</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Data Import/Export</label>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-primary flex-grow-1" id="importBtn">
-                        <i class="bi bi-upload"></i>
-                        Import Data
-                    </button>
-                    <button class="btn btn-outline-primary flex-grow-1" id="exportBtn">
-                        <i class="bi bi-download"></i>
-                        Export Data
-                    </button>
+    <div class="container py-4">
+        <h1 class="text-center mb-4" style="color: #00FF41">Psychology Experiment Simulator</h1>
+        
+        <div class="cyberpunk-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <button id="runSimulationBtn" class="cyberpunk-btn me-2">Run Simulation</button>
+                    <button id="importBtn" class="cyberpunk-btn me-2">Import Data</button>
+                    <button id="exportBtn" class="cyberpunk-btn">Export Data</button>
                 </div>
-                <small class="text-muted d-block mt-1">Supported formats: CSV, JSON</small>
+                <div class="chart-type-control">
+                    <label for="chartTypeSelector" class="mb-0" style="color: #00FF41">Chart Type:</label>
+                    <select id="chartTypeSelector" class="cyberpunk-select" aria-label="Select chart type">
+                        <option value="bar">Bar Chart</option>
+                        <option value="line">Line Chart</option>
+                        <option value="radar">Radar Chart</option>
+                        <option value="pie">Pie Chart</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="dataChart"></canvas>
             </div>
         </div>
 
-        <!-- Descriptive Statistics Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <h4 class="section-title">Descriptive Statistics</h4>
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <div class="stats-card">
-                            <div class="stats-label">Mean Score</div>
-                            <div class="stats-value" id="meanScore">-</div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stats-card">
-                            <div class="stats-label">Standard Deviation</div>
-                            <div class="stats-value" id="stdDev">-</div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stats-card">
-                            <div class="stats-label">Minimum</div>
-                            <div class="stats-value" id="minScore">-</div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stats-card">
-                            <div class="stats-label">Maximum</div>
-                            <div class="stats-value" id="maxScore">-</div>
-                        </div>
-                    </div>
+        <div id="simulationInfo" class="cyberpunk-container" style="display: none;">
+            <h3 class="mb-4" style="color: #00FF41">Simulation Results</h3>
+            
+            <div class="stats-grid mb-4">
+                <div class="stat-card">
+                    <h5>Total Participants</h5>
+                    <p id="totalParticipants" class="mb-0">-</p>
+                </div>
+                <div class="stat-card">
+                    <h5>Total Interactions</h5>
+                    <p id="totalInteractions" class="mb-0">-</p>
+                </div>
+                <div class="stat-card">
+                    <h5>Average Score</h5>
+                    <p id="avgScore" class="mb-0">-</p>
+                </div>
+                <div class="stat-card">
+                    <h5>Score Std Dev</h5>
+                    <p id="scoreStdDev" class="mb-0">-</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Import Dialog -->
-        <div class="import-overlay" id="importOverlay">
-            <div class="import-dialog">
-                <h4 class="mb-3">Import Data</h4>
-                <p class="text-muted">Select a CSV or JSON file to import simulation data.</p>
-                
-                <div class="mb-3">
-                    <input type="file" class="form-control" id="importFile" accept=".csv,.json">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h5>Mean Dimension Score</h5>
+                    <p id="meanScore" class="mb-0">-</p>
                 </div>
-                
-                <div class="import-preview" id="importPreview">
-                    <small class="text-muted">Data preview will appear here</small>
+                <div class="stat-card">
+                    <h5>Dimension Std Dev</h5>
+                    <p id="stdDev" class="mb-0">-</p>
                 </div>
-                
-                <div class="d-flex justify-content-end gap-2">
-                    <button class="btn btn-secondary" id="cancelImport">Cancel</button>
-                    <button class="btn btn-primary" id="confirmImport" disabled>Import</button>
+                <div class="stat-card">
+                    <h5>Min Dimension Score</h5>
+                    <p id="minScore" class="mb-0">-</p>
+                </div>
+                <div class="stat-card">
+                    <h5>Max Dimension Score</h5>
+                    <p id="maxScore" class="mb-0">-</p>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay">
+        <div class="text-center">
+            <div class="spinner-border text-success mb-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p style="color: #00FF41">Running Simulation...</p>
+        </div>
+    </div>
+
+    <!-- Import Dialog -->
+    <div id="importOverlay">
+        <div class="import-dialog">
+            <h4 style="color: #00FF41">Import Data</h4>
+            <p>Select a CSV or JSON file to import simulation data</p>
+            
+            <input type="file" id="importFile" class="form-control mb-3" accept=".csv,.json">
+            
+            <div id="importPreview" class="mb-3">
+                <p class="text-muted">File preview will appear here</p>
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <button id="cancelImport" class="cyberpunk-btn me-2">Cancel</button>
+                <button id="confirmImport" class="cyberpunk-btn" disabled>Import</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Initialize current data
-        let currentData = {
-            dimensionScores: {},
-            metadata: {}
-        };
-
-        // Utility functions for statistics
-        function calculateStats(data) {
-            const values = Object.values(data.dimensionScores);
-            if (values.length === 0) return { mean: 0, stdDev: 0, min: 0, max: 0 };
-            
-            const mean = values.reduce((a, b) => a + b, 0) / values.length;
-            const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
-            const stdDev = Math.sqrt(variance);
-            const min = Math.min(...values);
-            const max = Math.max(...values);
-
-            return { mean, stdDev, min, max };
-        }
-
-        function updateStats(data) {
-            const stats = calculateStats(data);
-            document.getElementById('meanScore').textContent = stats.mean.toFixed(2);
-            document.getElementById('stdDev').textContent = stats.stdDev.toFixed(2);
-            document.getElementById('minScore').textContent = stats.min.toFixed(2);
-            document.getElementById('maxScore').textContent = stats.max.toFixed(2);
-        }
-
-        // File reading utility
-        function readFileContent(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.onerror = (e) => reject(e);
-                reader.readAsText(file);
-            });
-        }
-
-        // Export functionality
-        function exportData(data, format = 'csv') {
-            const filename = `simulation_results.${format}`;
-            let content = '';
-
-            if (format === 'csv') {
-                content = 'Dimension Scores\n';
-                content += 'Dimension,Score\n';
-                Object.entries(data.dimensionScores).forEach(([dim, score]) => {
-                    content += `${dim},${score}\n`;
-                });
-                content += '\nMetadata\n';
-                Object.entries(data.metadata).forEach(([key, value]) => {
-                    content += `${key},${value}\n`;
-                });
-            } else {
-                content = JSON.stringify(data, null, 2);
-            }
-
-            const blob = new Blob([content], { type: format === 'csv' ? 'text/csv' : 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-        
-        // Import functionality
-        function showImportDialog() {
-            document.getElementById('importOverlay').style.display = 'flex';
-            document.getElementById('importFile').value = '';
-            document.getElementById('importPreview').innerHTML = '<small class="text-muted">Data preview will appear here</small>';
-            document.getElementById('confirmImport').disabled = true;
-        }
-        
-        function hideImportDialog() {
-            document.getElementById('importOverlay').style.display = 'none';
-        }
-        
-        async function handleFilePreview(file) {
-            try {
-                const content = await readFileContent(file);
-                let preview = '';
-                
-                if (file.name.endsWith('.csv')) {
-                    const lines = content.split('\n').slice(0, 5);
-                    preview = lines.join('\n');
-                } else {
-                    const data = JSON.parse(content);
-                    preview = JSON.stringify(data, null, 2).slice(0, 200) + '...';
-                }
-                
-                document.getElementById('importPreview').innerHTML = `
-                    <pre style="margin: 0;">${preview}</pre>
-                `;
-                document.getElementById('confirmImport').disabled = false;
-                
-            } catch (error) {
-                document.getElementById('importPreview').innerHTML = `
-                    <div class="text-danger">Error previewing file: ${error.message}</div>
-                `;
-                document.getElementById('confirmImport').disabled = true;
-            }
-        }
-        
-        // Parse uploaded file
-        async function parseUploadedFile(file) {
-            const content = await readFileContent(file);
-            
-            if (file.name.endsWith('.csv')) {
-                return parseCSV(content);
-            } else {
-                return JSON.parse(content);
-            }
-        }
-        
-        // Enhanced CSV parsing
-        function parseCSV(content) {
-            const lines = content.split('\n').map(line => line.trim()).filter(line => line);
-            const result = {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize data and chart
+            let currentData = {
                 dimensionScores: {},
                 metadata: {}
             };
-            
-            let currentSection = '';
-            
-            for (let i = 0; i < lines.length; i++) {
-                const cells = lines[i].split(',').map(cell => cell.trim());
-                
-                if (cells[0] === 'Dimension Scores' || cells[0] === 'Metadata') {
-                    currentSection = cells[0];
-                    continue;
-                }
-                
-                if (cells.length >= 2 && cells[0] !== 'Dimension' && cells[0] !== 'Score') {
-                    const [key, value] = cells;
-                    
-                    if (currentSection === 'Dimension Scores') {
-                        result.dimensionScores[key] = parseFloat(value);
-                    } else if (currentSection === 'Metadata') {
-                        result.metadata[key] = isNaN(value) ? value : parseFloat(value);
+
+            let chart = null;
+
+            // Chart configuration with cyberpunk theme
+            const chartConfig = {
+                bar: {
+                    type: 'bar',
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#E5E5E5',
+                                    font: {
+                                        family: "'JetBrains Mono', monospace"
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 255, 65, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#E5E5E5',
+                                    font: {
+                                        family: "'JetBrains Mono', monospace"
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 255, 65, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#E5E5E5',
+                                    font: {
+                                        family: "'JetBrains Mono', monospace"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                line: {
+                    type: 'line',
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#E5E5E5',
+                                    font: {
+                                        family: "'JetBrains Mono', monospace"
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 255, 65, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#E5E5E5',
+                                    font: {
+                                        family: "'JetBrains Mono', monospace"
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 255, 65, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#E5E5E5',
+                                    font: {
+                                        family: "'JetBrains Mono', monospace"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                radar: {
+                    type: 'radar',
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#E5E5E5',
+                                    font: {
+                                        family: "'JetBrains Mono', monospace"
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 255, 65, 0.1)'
+                                },
+                                pointLabels: {
+                                    color: '#E5E5E5',
+                                    font: {
+                                        family: "'JetBrains Mono', monospace"
+                                    }
+                                },
+                                ticks: {
+                                    color: '#E5E5E5',
+                                    font: {
+                                        family: "'JetBrains Mono', monospace"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                pie: {
+                    type: 'pie',
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#E5E5E5',
+                                    font: {
+                                        family: "'JetBrains Mono', monospace"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+            };
+
+            // Function to show loading overlay
+            function showLoading() {
+                document.getElementById('loadingOverlay').style.display = 'flex';
             }
-            
-            return result;
-        }
-        
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            // Import dialog
+
+            // Function to hide loading overlay
+            function hideLoading() {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+
+            // Function to run simulation
+            async function runSimulation() {
+                try {
+                    showLoading();
+                    const response = await fetch('http://localhost:5000/run_simulation', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Simulation failed');
+                    }
+                    
+                    const data = await response.json();
+                    currentData = data;
+                    updateStats(data);
+                    updateChart();
+                    updateSimulationInfo(data.metadata);
+                    document.getElementById('simulationInfo').style.display = 'block';
+                    
+                } catch (error) {
+                    console.error('Error running simulation:', error);
+                    alert('Error running simulation. Please try again.');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // Function to update simulation info
+            function updateSimulationInfo(metadata) {
+                document.getElementById('totalParticipants').textContent = metadata.total_participants;
+                document.getElementById('totalInteractions').textContent = metadata.total_interactions;
+                document.getElementById('avgScore').textContent = metadata.avg_total_score.toFixed(2);
+                document.getElementById('scoreStdDev').textContent = metadata.std_total_score.toFixed(2);
+            }
+
+            // Function to update chart
+            function updateChart() {
+                const ctx = document.getElementById('dataChart').getContext('2d');
+                const chartType = document.getElementById('chartTypeSelector').value;
+                const config = chartConfig[chartType];
+                
+                // Prepare data based on chart type
+                const labels = Object.keys(currentData.dimensionScores);
+                const values = Object.values(currentData.dimensionScores);
+                
+                const chartData = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Dimension Scores',
+                        data: values,
+                        backgroundColor: chartType === 'pie' ? 
+                            values.map(() => `rgba(0, 255, 65, ${Math.random() * 0.4 + 0.2})`) :
+                            'rgba(0, 255, 65, 0.2)',
+                        borderColor: '#00FF41',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#00FF41',
+                        pointBorderColor: '#00FF41',
+                        pointHoverBackgroundColor: '#FFFFFF',
+                        pointHoverBorderColor: '#00FF41'
+                    }]
+                };
+
+                // Destroy existing chart if it exists
+                if (chart) {
+                    chart.destroy();
+                }
+
+                // Create new chart
+                chart = new Chart(ctx, {
+                    type: config.type,
+                    data: chartData,
+                    options: config.options
+                });
+            }
+
+            // Function to update stats
+            function updateStats(data) {
+                const values = Object.values(data.dimensionScores);
+                const mean = values.reduce((a, b) => a + b, 0) / values.length;
+                const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+                const stdDev = Math.sqrt(variance);
+                const min = Math.min(...values);
+                const max = Math.max(...values);
+
+                document.getElementById('meanScore').textContent = mean.toFixed(2);
+                document.getElementById('stdDev').textContent = stdDev.toFixed(2);
+                document.getElementById('minScore').textContent = min.toFixed(2);
+                document.getElementById('maxScore').textContent = max.toFixed(2);
+            }
+
+            // Function to show import dialog
+            function showImportDialog() {
+                document.getElementById('importOverlay').style.display = 'flex';
+            }
+
+            // Function to hide import dialog
+            function hideImportDialog() {
+                document.getElementById('importOverlay').style.display = 'none';
+            }
+
+            // Function to handle file preview
+            async function handleFilePreview(file) {
+                try {
+                    const content = await readFileContent(file);
+                    let preview = '';
+                    
+                    if (file.name.endsWith('.csv')) {
+                        const lines = content.split('\n').slice(0, 5);
+                        preview = lines.join('\n');
+                    } else {
+                        const data = JSON.parse(content);
+                        preview = JSON.stringify(data, null, 2).slice(0, 200) + '...';
+                    }
+                    
+                    document.getElementById('importPreview').innerHTML = `
+                        <pre style="margin: 0;">${preview}</pre>
+                    `;
+                    document.getElementById('confirmImport').disabled = false;
+                    
+                } catch (error) {
+                    document.getElementById('importPreview').innerHTML = `
+                        <div class="text-danger">Error previewing file: ${error.message}</div>
+                    `;
+                    document.getElementById('confirmImport').disabled = true;
+                }
+            }
+
+            // Function to read file content
+            function readFileContent(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = (e) => reject(e);
+                    reader.readAsText(file);
+                });
+            }
+
+            // Function to parse uploaded file
+            async function parseUploadedFile(file) {
+                const content = await readFileContent(file);
+                
+                if (file.name.endsWith('.csv')) {
+                    return parseCSV(content);
+                } else {
+                    return JSON.parse(content);
+                }
+            }
+
+            // Function to parse CSV
+            function parseCSV(content) {
+                const lines = content.split('\n').map(line => line.trim()).filter(line => line);
+                const result = {
+                    dimensionScores: {},
+                    metadata: {}
+                };
+                
+                let currentSection = '';
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const cells = lines[i].split(',').map(cell => cell.trim());
+                    
+                    if (cells[0] === 'Dimension Scores' || cells[0] === 'Metadata') {
+                        currentSection = cells[0];
+                        continue;
+                    }
+                    
+                    if (cells.length >= 2 && cells[0] !== 'Dimension' && cells[0] !== 'Score') {
+                        const [key, value] = cells;
+                        
+                        if (currentSection === 'Dimension Scores') {
+                            result.dimensionScores[key] = parseFloat(value);
+                        } else if (currentSection === 'Metadata') {
+                            result.metadata[key] = isNaN(value) ? value : parseFloat(value);
+                        }
+                    }
+                }
+                
+                return result;
+            }
+
+            // Function to export data
+            function exportData(data, format = 'csv') {
+                const filename = `simulation_results.${format}`;
+                let content = '';
+
+                if (format === 'csv') {
+                    content = 'Dimension Scores\n';
+                    content += 'Dimension,Score\n';
+                    Object.entries(data.dimensionScores).forEach(([dim, score]) => {
+                        content += `${dim},${score}\n`;
+                    });
+                    content += '\nMetadata\n';
+                    Object.entries(data.metadata).forEach(([key, value]) => {
+                        content += `${key},${value}\n`;
+                    });
+                } else {
+                    content = JSON.stringify(data, null, 2);
+                }
+
+                const blob = new Blob([content], { type: format === 'csv' ? 'text/csv' : 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            // Set up event listeners
+            document.getElementById('chartTypeSelector').addEventListener('change', updateChart);
+            document.getElementById('runSimulationBtn').addEventListener('click', runSimulation);
             document.getElementById('importBtn').addEventListener('click', showImportDialog);
             document.getElementById('cancelImport').addEventListener('click', hideImportDialog);
-            
-            // Export functionality
             document.getElementById('exportBtn').addEventListener('click', () => {
                 const format = window.confirm('Export as CSV? Click Cancel for JSON') ? 'csv' : 'json';
                 exportData(currentData, format);
             });
-            
             document.getElementById('importFile').addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
                     handleFilePreview(file);
                 }
             });
-            
             document.getElementById('confirmImport').addEventListener('click', async () => {
                 const file = document.getElementById('importFile').files[0];
                 if (!file) return;
@@ -359,20 +599,16 @@
                     currentData = data;
                     hideImportDialog();
                     updateStats(data);
+                    updateChart();
                 } catch (error) {
                     alert('Error importing file: ' + error.message);
                 }
             });
-            
-            // Close import dialog when clicking outside
             document.getElementById('importOverlay').addEventListener('click', (e) => {
                 if (e.target.id === 'importOverlay') {
                     hideImportDialog();
                 }
             });
-
-            // Initialize stats with empty data
-            updateStats(currentData);
         });
     </script>
 </body>

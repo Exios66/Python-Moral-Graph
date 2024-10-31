@@ -1,89 +1,48 @@
-import logging
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, render_template
 from flask_cors import CORS
-from moral_graph.simulator import simulate_experiment, SCORE_WEIGHTS
-import pandas as pd
-from config import Config
+import sys
+import os
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# Add project root to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from psych_experiment_simulator import simulate_experiment
+import pandas as pd
+import numpy as np
 
 app = Flask(__name__)
-app.config.from_object(Config)
-CORS(app)
+CORS(app)  # Enable CORS for all routes
 
 @app.route('/')
 def index():
-    """Serve the main page"""
-    try:
-        return render_template('index.html')
-    except Exception as e:
-        logger.error(f"Error serving index page: {str(e)}")
-        return jsonify({'error': 'Internal server error'}), 500
+    return render_template('index.html')
 
-@app.route('/api/simulate', methods=['POST'])
+@app.route('/run_simulation', methods=['POST'])
 def run_simulation():
-    """Run psychology experiment simulation and return results"""
     try:
-        # Validate request data
-        if not request.is_json:
-            return jsonify({'error': 'Request must be JSON'}), 400
-            
-        data = request.get_json()
-        if not isinstance(data, dict):
-            return jsonify({'error': 'Invalid JSON format'}), 400
-            
-        num_participants = data.get('participantCount', 100)
-        if not isinstance(num_participants, int):
-            return jsonify({'error': 'Participant count must be an integer'}), 400
-        
-        # Validate participant count against config
-        if num_participants < Config.MIN_PARTICIPANTS or num_participants > Config.MAX_PARTICIPANTS:
-            return jsonify({
-                'error': f'Participant count must be between {Config.MIN_PARTICIPANTS} and {Config.MAX_PARTICIPANTS}'
-            }), 400
-        
-        # Run the simulation
-        logger.info(f"Starting simulation with {num_participants} participants")
-        results_df = simulate_experiment(num_participants=num_participants)
-        
-        if results_df.empty:
-            return jsonify({'error': 'Simulation produced no results'}), 500
-            
-        # Calculate summary statistics
-        summary_stats = {
-            'totalParticipants': num_participants,
-            'averageScore': round(float(results_df['TotalWeightedScore'].mean()), 2),
-            'completionRate': 100.0,
-            'dimensionScores': {}
-        }
+        # Run simulation with 100 participants
+        df = simulate_experiment(num_participants=100)
         
         # Calculate average scores for each dimension
-        for dimension in SCORE_WEIGHTS.keys():
-            if dimension in results_df.columns:
-                summary_stats['dimensionScores'][dimension] = round(float(results_df[dimension].mean()), 2)
-        
-        logger.info("Simulation completed successfully")
-        return jsonify(summary_stats)
-    
-    except ValueError as ve:
-        logger.error(f"Validation error: {str(ve)}")
-        return jsonify({'error': str(ve)}), 400
+        dimension_scores = {}
+        for col in df.columns:
+            if col not in ['ParticipantID', 'ChatbotID', 'Specialization', 'AssignmentType', 'TotalWeightedScore', 'Timestamp']:
+                dimension_scores[col] = float(df[col].mean())
+
+        # Calculate metadata
+        metadata = {
+            'total_participants': len(df['ParticipantID'].unique()),
+            'total_interactions': len(df),
+            'avg_total_score': float(df['TotalWeightedScore'].mean()),
+            'std_total_score': float(df['TotalWeightedScore'].std())
+        }
+
+        return jsonify({
+            'dimensionScores': dimension_scores,
+            'metadata': metadata
+        })
+
     except Exception as e:
-        logger.error(f"Unexpected error in simulation: {str(e)}")
-        return jsonify({'error': 'Internal server error'}), 500
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    # Only run in debug mode during development
-    is_debug = app.config.get('DEBUG', False)
-    port = app.config.get('PORT', 5000)
-    
-    app.run(
-        host='0.0.0.0',
-        port=port,
-        debug=is_debug
-    )
+    app.run(debug=True, port=5000)
