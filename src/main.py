@@ -5,56 +5,61 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from pathlib import Path
+from typing import Dict, List, Optional
+from config import Config
 
-# Configure logging
+# Configure logging with both file and console handlers
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler('experiment.log')
+        logging.FileHandler('experiment.log', mode='a')
     ]
 )
 logger = logging.getLogger(__name__)
 
-# Constants matching frontend
+# Import constants from config to ensure consistency
 SPECIALIZATIONS = [
     "Psychology",
     "Sociology", 
     "Natural Sciences", 
     "Mathematics",
-    "Computer Science",
-    "Humanities", 
-    "Economics",
+    "Computer Science", 
+    "Humanities",
+    "Economics", 
     "Medicine"
 ]
 
-DIMENSION_WEIGHTS = {
-    'Accuracy': 0.25,
-    'Clarity': 0.20,
-    'Depth': 0.20,
-    'Ethics': 0.20,
-    'Engagement': 0.15
-}
+DIMENSION_WEIGHTS = Config.DIMENSION_WEIGHTS
+SCORE_THRESHOLDS = Config.SCORE_THRESHOLDS
 
-SCORE_THRESHOLDS = {
-    'excellent': 4.5,
-    'good': 3.5,
-    'acceptable': 2.5,
-    'poor': 1.5
-}
-
-def setup_directories():
+def setup_directories() -> None:
     """Create necessary directories if they don't exist."""
     dirs = ['data/outputs', 'data/visualizations', 'data/reports']
     for dir_path in dirs:
         Path(dir_path).mkdir(parents=True, exist_ok=True)
+        logger.debug(f"Created directory: {dir_path}")
 
-def simulate_experiment(num_participants):
+def simulate_experiment(num_participants: int) -> pd.DataFrame:
     """
     Simulate experiment data for given number of participants.
-    Returns DataFrame with simulated results.
+    
+    Args:
+        num_participants: Number of participants to simulate
+        
+    Returns:
+        DataFrame containing simulated results
+        
+    Raises:
+        ValueError: If num_participants is not within configured limits
     """
+    if not Config.MIN_PARTICIPANTS <= num_participants <= Config.MAX_PARTICIPANTS:
+        raise ValueError(
+            f"Number of participants must be between "
+            f"{Config.MIN_PARTICIPANTS} and {Config.MAX_PARTICIPANTS}"
+        )
+    
     logger.info(f"Starting simulation with {num_participants} participants")
     
     results = []
@@ -65,107 +70,149 @@ def simulate_experiment(num_participants):
         for _ in range(num_interactions):
             # Generate random scores with realistic distributions
             scores = {
-                dim: min(5.0, max(1.0, np.random.normal(3.8, 0.7)))
+                dim: float(np.clip(np.random.normal(3.8, 0.7), 1.0, 5.0))
                 for dim in DIMENSION_WEIGHTS.keys()
             }
             
-            # Calculate weighted average
-            weighted_score = sum(
-                score * weight 
-                for (dim, score), (_, weight) 
-                in zip(scores.items(), DIMENSION_WEIGHTS.items())
-            )
+            # Calculate weighted average using numpy for better performance
+            weighted_score = np.sum([
+                scores[dim] * weight 
+                for dim, weight in DIMENSION_WEIGHTS.items()
+            ])
             
             results.append({
                 'participant_id': participant_id,
                 'specialization': np.random.choice(SPECIALIZATIONS),
-                'timestamp': datetime.now(),
+                'timestamp': datetime.now().isoformat(),
                 **scores,
                 'weighted_score': weighted_score
             })
             
-        if participant_id % 10 == 0:
-            logger.debug(f"Processed {participant_id} participants")
+        if participant_id > 0 and participant_id % 10 == 0:
+            logger.debug(f"Processed {participant_id}/{num_participants} participants")
             
     return pd.DataFrame(results)
 
-def plot_dimension_distributions(data, output_dir='data/visualizations'):
-    """Generate dimension distribution plots."""
+def plot_dimension_distributions(data: pd.DataFrame, output_dir: str = 'data/visualizations') -> None:
+    """
+    Generate dimension distribution plots.
+    
+    Args:
+        data: DataFrame containing experiment results
+        output_dir: Directory to save visualization files
+        
+    Raises:
+        ImportError: If required plotting libraries are not available
+        RuntimeError: If plotting fails
+    """
     logger.info("Generating dimension distribution plots")
     
     try:
         import seaborn as sns
         import matplotlib.pyplot as plt
         
-        # Create dimension score distributions
         plt.figure(figsize=(12, 8))
         for dim in DIMENSION_WEIGHTS.keys():
-            sns.kdeplot(data[dim], label=dim)
+            sns.kdeplot(data=data, x=dim, label=dim)
         
         plt.title('Distribution of Dimension Scores')
         plt.xlabel('Score')
         plt.ylabel('Density')
         plt.legend()
-        plt.savefig(f'{output_dir}/dimension_distributions.png')
-        plt.close()
         
+        output_path = f'{output_dir}/dimension_distributions.png'
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        logger.debug(f"Saved dimension distribution plot to {output_path}")
+        
+    except ImportError as e:
+        logger.error("Required plotting libraries not available")
+        raise
     except Exception as e:
         logger.error(f"Error generating dimension plots: {str(e)}")
-        raise
+        raise RuntimeError(f"Failed to generate dimension plots: {str(e)}")
 
-def plot_topic_performance(data, output_dir='data/visualizations'):
-    """Generate topic performance visualizations."""
+def plot_topic_performance(data: pd.DataFrame, output_dir: str = 'data/visualizations') -> None:
+    """
+    Generate topic performance visualizations.
+    
+    Args:
+        data: DataFrame containing experiment results
+        output_dir: Directory to save visualization files
+        
+    Raises:
+        ImportError: If required plotting libraries are not available
+        RuntimeError: If plotting fails
+    """
     logger.info("Generating topic performance plots")
     
     try:
         import seaborn as sns
         import matplotlib.pyplot as plt
         
-        # Create topic performance boxplots
         plt.figure(figsize=(12, 8))
-        sns.boxplot(x='specialization', y='weighted_score', data=data)
-        plt.xticks(rotation=45)
+        sns.boxplot(data=data, x='specialization', y='weighted_score')
+        plt.xticks(rotation=45, ha='right')
         plt.title('Score Distribution by Topic')
-        plt.tight_layout()
-        plt.savefig(f'{output_dir}/topic_performance.png')
-        plt.close()
         
+        output_path = f'{output_dir}/topic_performance.png'
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        logger.debug(f"Saved topic performance plot to {output_path}")
+        
+    except ImportError as e:
+        logger.error("Required plotting libraries not available")
+        raise
     except Exception as e:
         logger.error(f"Error generating topic plots: {str(e)}")
-        raise
+        raise RuntimeError(f"Failed to generate topic plots: {str(e)}")
 
-def generate_summary_report(data, output_dir='data/reports'):
-    """Generate and save summary report of results."""
+def generate_summary_report(data: pd.DataFrame, output_dir: str = 'data/reports') -> Dict:
+    """
+    Generate and save summary report of results.
+    
+    Args:
+        data: DataFrame containing experiment results
+        output_dir: Directory to save report files
+        
+    Returns:
+        Dictionary containing summary statistics
+        
+    Raises:
+        RuntimeError: If report generation fails
+    """
     logger.info("Generating summary report")
     
     try:
         summary = {
-            'total_participants': data['participant_id'].nunique(),
+            'total_participants': int(data['participant_id'].nunique()),
             'total_interactions': len(data),
-            'avg_interactions_per_participant': len(data) / data['participant_id'].nunique(),
+            'avg_interactions_per_participant': float(len(data) / data['participant_id'].nunique()),
             'dimension_means': {
-                dim: data[dim].mean() 
+                dim: float(data[dim].mean())
                 for dim in DIMENSION_WEIGHTS.keys()
             },
             'topic_performance': data.groupby('specialization')['weighted_score'].agg([
                 'mean', 'std', 'count'
-            ]).to_dict(),
-            'overall_mean_score': data['weighted_score'].mean(),
-            'overall_std_score': data['weighted_score'].std()
+            ]).round(3).to_dict('index'),
+            'overall_mean_score': float(data['weighted_score'].mean()),
+            'overall_std_score': float(data['weighted_score'].std())
         }
         
         # Save summary as JSON
-        import json
-        with open(f'{output_dir}/summary_report.json', 'w') as f:
+        output_path = f'{output_dir}/summary_report.json'
+        with open(output_path, 'w') as f:
+            import json
             json.dump(summary, f, indent=4)
+        logger.debug(f"Saved summary report to {output_path}")
             
         return summary
         
     except Exception as e:
         logger.error(f"Error generating summary report: {str(e)}")
-        raise
+        raise RuntimeError(f"Failed to generate summary report: {str(e)}")
 
-def main():
+def main() -> None:
     """Main execution function."""
     try:
         # Setup directories
@@ -190,12 +237,12 @@ def main():
         logger.info("Generating summary report")
         summary = generate_summary_report(experiment_data)
         
-        logger.info("\nExperiment simulation complete!")
+        logger.info("Experiment simulation complete!")
         logger.info("Results have been saved to the data/outputs directory")
         
     except Exception as e:
         logger.error(f"Error in main execution: {str(e)}")
-        raise
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

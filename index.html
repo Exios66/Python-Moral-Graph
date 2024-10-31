@@ -294,205 +294,269 @@
             poor: 1.5
         };
 
-        // Initialize charts
+        // Chart instances
         let dimensionChart = null;
         let topicChart = null;
         let scoreChart = null;
 
-        // Populate topics list
-        const topicsList = document.getElementById('topics-list');
-        if (typeof TOPICS !== 'undefined') {
-            TOPICS.forEach(topic => {
-                const li = document.createElement('li');
-                li.className = 'list-group-item';
-                li.textContent = topic;
-                topicsList.appendChild(li);
-            });
+        // Initialize UI elements
+        function initializeUI() {
+            const topicsList = document.getElementById('topics-list');
+            const dimensionsList = document.getElementById('dimensions-list');
+
+            if (topicsList && typeof TOPICS !== 'undefined') {
+                TOPICS.forEach(topic => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.textContent = topic;
+                    topicsList.appendChild(li);
+                });
+            }
+
+            if (dimensionsList && typeof DIMENSIONS !== 'undefined') {
+                DIMENSIONS.forEach(dim => {
+                    const card = document.createElement('div');
+                    card.className = 'dimension-card card mb-2';
+                    card.innerHTML = `
+                        <div class="card-body">
+                            <h6 class="card-title">${dim.name}</h6>
+                            <p class="card-text">Weight: ${dim.weight}%</p>
+                            <small class="text-muted">${dim.description}</small>
+                        </div>
+                    `;
+                    dimensionsList.appendChild(card);
+                });
+            }
         }
 
-        // Populate dimensions list
-        const dimensionsList = document.getElementById('dimensions-list');
-        if (typeof DIMENSIONS !== 'undefined') {
-            DIMENSIONS.forEach(dim => {
-                const card = document.createElement('div');
-                card.className = 'dimension-card card mb-2';
-                card.innerHTML = `
-                    <div class="card-body">
-                        <h6 class="card-title">${dim.name}</h6>
-                        <p class="card-text">Weight: ${dim.weight}%</p>
-                        <small class="text-muted">${dim.description}</small>
-                    </div>
-                `;
-                dimensionsList.appendChild(card);
-            });
-        }
-
-        // Simulation logic with error handling
-        function simulateExperiment(participantCount) {
+        // Simulation logic with error handling and validation
+        async function simulateExperiment(participantCount) {
             try {
-                if (!participantCount || participantCount < 1) {
-                    throw new Error('Invalid participant count');
+                if (!Number.isInteger(participantCount) || participantCount < 10 || participantCount > 10000) {
+                    throw new Error('Participant count must be between 10 and 10000');
                 }
 
-                // Initialize dimensions with their weights
                 const dimensionScores = {};
                 
-                // Generate realistic scores for each dimension
+                // Generate realistic scores with validation
                 Object.keys(DIMENSION_WEIGHTS).forEach(dimension => {
-                    // Generate a score between 3.0 and 4.8 with some randomness
                     const baseScore = 3.0 + (Math.random() * 1.8);
-                    dimensionScores[dimension] = parseFloat(baseScore.toFixed(2));
+                    const validatedScore = Math.min(Math.max(baseScore, 1.0), 5.0);
+                    dimensionScores[dimension] = parseFloat(validatedScore.toFixed(2));
                 });
 
-                // Calculate overall statistics with validation
+                // Calculate weighted average with validation
                 const averageScore = Object.entries(dimensionScores)
                     .reduce((acc, [dim, score]) => {
                         const weight = DIMENSION_WEIGHTS[dim];
-                        if (typeof weight !== 'number') {
+                        if (typeof weight !== 'number' || weight < 0 || weight > 1) {
                             throw new Error(`Invalid weight for dimension: ${dim}`);
                         }
                         return acc + (score * weight);
                     }, 0);
 
-                // Generate additional realistic metrics
-                const completionRate = 95 + (Math.random() * 5); // 95-100%
-                const interactionsPerParticipant = Math.floor(5 + (Math.random() * 7)); // 5-12
+                const completionRate = 95 + (Math.random() * 5);
+                const interactionsPerParticipant = Math.floor(5 + (Math.random() * 7));
 
                 return {
-                    dimensionScores: dimensionScores,
+                    dimensionScores,
                     totalParticipants: participantCount,
                     averageScore: parseFloat(averageScore.toFixed(2)),
                     completionRate: parseFloat(completionRate.toFixed(1)),
                     totalInteractions: participantCount * interactionsPerParticipant,
-                    averageInteractionsPerParticipant: interactionsPerParticipant
+                    averageInteractionsPerParticipant: interactionsPerParticipant,
+                    timestamp: new Date().toISOString()
                 };
             } catch (error) {
                 console.error('Simulation error:', error);
-                throw new Error('Failed to simulate experiment: ' + error.message);
+                throw new Error(`Failed to simulate experiment: ${error.message}`);
             }
         }
 
-        // Form submission handler
+        // Form submission handler with proper error handling
         document.getElementById('simulation-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const participantCount = parseInt(document.getElementById('participantCount').value);
             
-            // Show loading spinner
-            document.getElementById('loading-spinner').style.display = 'block';
-            document.querySelector('.results-section').style.display = 'none';
-
-            // Simulate progress
-            let progress = 0;
+            const participantCount = parseInt(document.getElementById('participantCount').value);
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const resultsSection = document.querySelector('.results-section');
             const progressBar = document.getElementById('simulation-progress');
-            const progressInterval = setInterval(() => {
-                progress += 5;
-                if (progress <= 100) {
+            
+            loadingSpinner.style.display = 'block';
+            resultsSection.style.display = 'none';
+
+            let progressInterval;
+            try {
+                // Simulate progress
+                let progress = 0;
+                progressInterval = setInterval(() => {
+                    progress = Math.min(progress + 5, 95);
                     progressBar.style.width = `${progress}%`;
                     progressBar.textContent = `${progress}%`;
                     progressBar.setAttribute('aria-valuenow', progress);
-                }
-            }, 100);
+                }, 100);
 
-            try {
-                // Simulate processing time
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                const results = await simulateExperiment(participantCount);
                 
-                const results = simulateExperiment(participantCount);
-                displayResults(results);
+                // Complete progress bar
+                progressBar.style.width = '100%';
+                progressBar.textContent = '100%';
+                progressBar.setAttribute('aria-valuenow', 100);
+                
+                await displayResults(results);
+                
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error running simulation. Please try again.');
+                alert(`Error running simulation: ${error.message}`);
             } finally {
                 clearInterval(progressInterval);
-                document.getElementById('loading-spinner').style.display = 'none';
-                document.querySelector('.results-section').style.display = 'block';
+                loadingSpinner.style.display = 'none';
+                resultsSection.style.display = 'block';
             }
         });
 
-        function displayResults(data) {
-            updateResultsTable(data);
-            updateVisualization(data);
-            document.querySelector('.results-section').style.display = 'block';
+        // Results display with error handling
+        async function displayResults(data) {
+            try {
+                await Promise.all([
+                    updateResultsTable(data),
+                    updateCharts(data)
+                ]);
+            } catch (error) {
+                console.error('Error displaying results:', error);
+                throw error;
+            }
         }
 
         function updateResultsTable(data) {
             const tableBody = document.getElementById('overall-stats');
+            if (!tableBody) return;
+
             tableBody.innerHTML = '';
             
+            const formatValue = (value) => {
+                if (typeof value === 'number') return value.toFixed(2);
+                if (value instanceof Date) return value.toLocaleString();
+                return value;
+            };
+
             Object.entries(data).forEach(([key, value]) => {
-                const row = document.createElement('div');
-                row.className = 'mb-2';
+                const row = document.createElement('tr');
                 row.innerHTML = `
-                    <strong>${key}:</strong> ${typeof value === 'number' ? value.toFixed(2) : value}
+                    <td><strong>${key}:</strong></td>
+                    <td>${formatValue(value)}</td>
                 `;
                 tableBody.appendChild(row);
             });
         }
 
-        function updateVisualization(data) {
+        function updateCharts(data) {
+            // Clean up existing charts
+            [dimensionChart, topicChart, scoreChart].forEach(chart => {
+                if (chart) chart.destroy();
+            });
+
             // Update dimension scores chart
-            const dimensionCtx = document.getElementById('dimensionScoresChart').getContext('2d');
-            new Chart(dimensionCtx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(data.dimensionScores),
-                    datasets: [{
-                        label: 'Dimension Scores',
-                        data: Object.values(data.dimensionScores),
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 5
+            const dimensionCtx = document.getElementById('dimensionScoresChart')?.getContext('2d');
+            if (dimensionCtx) {
+                dimensionChart = new Chart(dimensionCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(data.dimensionScores),
+                        datasets: [{
+                            label: 'Dimension Scores',
+                            data: Object.values(data.dimensionScores),
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 5,
+                                ticks: {
+                                    stepSize: 0.5
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const label = context.dataset.label || '';
+                                        const value = context.parsed.y.toFixed(2);
+                                        return `${label}: ${value}`;
+                                    }
+                                }
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
 
-        // Download results handler with enhanced data
-        document.getElementById('downloadResults').addEventListener('click', () => {
-            const results = simulateExperiment(parseInt(document.getElementById('participantCount').value));
-            
-            // Enhanced CSV with more detailed statistics
-            const csvRows = [
-                ['Dimension', 'Score', 'Weight', 'Weighted Score', 'Percentile'],
-                ...DIMENSIONS.map(dim => {
-                    const score = results.dimensionScores[dim.name];
-                    const weightedScore = score * (dim.weight / 100);
-                    const percentile = ((score - 1) / 4 * 100).toFixed(1); // Simple percentile calculation
-                    return [
-                        dim.name,
-                        score.toFixed(2),
-                        `${dim.weight}%`,
-                        weightedScore.toFixed(2),
-                        `${percentile}%`
-                    ];
-                }),
-                [], // Empty row for separation
-                ['Overall Statistics'],
-                ['Total Participants', results.totalParticipants],
-                ['Average Score', results.averageScore.toFixed(2)],
-                ['Completion Rate', `${results.completionRate}%`]
-            ];
-            
-            const csvContent = "data:text/csv;charset=utf-8," + 
-                csvRows.map(row => row.join(',')).join('\n');
-            
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "simulation_results.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+        // Download results handler with error handling
+        document.getElementById('downloadResults').addEventListener('click', async () => {
+            try {
+                const participantCount = parseInt(document.getElementById('participantCount').value);
+                const results = await simulateExperiment(participantCount);
+                
+                const csvRows = [
+                    ['Dimension', 'Score', 'Weight', 'Weighted Score'],
+                    ...Object.entries(results.dimensionScores).map(([dimension, score]) => {
+                        const weight = DIMENSION_WEIGHTS[dimension];
+                        const weightedScore = score * weight;
+                        return [
+                            dimension,
+                            score.toFixed(2),
+                            weight.toFixed(2),
+                            weightedScore.toFixed(2)
+                        ];
+                    }),
+                    [],
+                    ['Overall Statistics'],
+                    ['Total Participants', results.totalParticipants],
+                    ['Average Score', results.averageScore.toFixed(2)],
+                    ['Completion Rate', `${results.completionRate}%`],
+                    ['Total Interactions', results.totalInteractions],
+                    ['Average Interactions Per Participant', results.averageInteractionsPerParticipant],
+                    ['Timestamp', results.timestamp]
+                ];
+
+                const csvContent = "data:text/csv;charset=utf-8," + 
+                    csvRows.map(row => row.join(',')).join('\n');
+                
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `simulation_results_${new Date().toISOString()}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error('Error downloading results:', error);
+                alert('Error generating download. Please try again.');
+            }
         });
+
+        // Run new simulation handler
+        document.getElementById('runNewSimulation').addEventListener('click', () => {
+            document.querySelector('.results-section').style.display = 'none';
+            document.getElementById('simulation-form').reset();
+            [dimensionChart, topicChart, scoreChart].forEach(chart => {
+                if (chart) chart.destroy();
+            });
+        });
+
+        // Initialize UI on load
+        document.addEventListener('DOMContentLoaded', initializeUI);
     </script>
 </body>
 </html>
