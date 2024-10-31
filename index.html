@@ -7,1352 +7,373 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <style>
-        .dimension-card {
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-        }
-        .dimension-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .results-section {
-            display: none;
-        }
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-        }
-        .chart-container {
-            height: 400px;
-            margin: 2rem 0;
-        }
-        .github-corner:hover .octo-arm {
-            animation: octocat-wave 560ms ease-in-out;
-        }
-        @keyframes octocat-wave {
-            0%, 100% { transform: translate3d(0, 0, 0) rotate(0) }
-            20%, 60% { transform: translate3d(0, 0, 0) rotate(-25deg) }
-            40%, 80% { transform: translate3d(0, 0, 0) rotate(10deg) }
-        }
-        :root {
-            --bs-body-bg: #ffffff;
-            --bs-body-color: #212529;
-            --card-bg: #ffffff;
-            --card-border: rgba(0,0,0,.125);
-        }
-
-        [data-bs-theme="dark"] {
-            --bs-body-bg: #212529;
-            --bs-body-color: #f8f9fa;
-            --card-bg: #343a40;
-            --card-border: rgba(255,255,255,.125);
-        }
-
         body {
-            background-color: var(--bs-body-bg);
-            color: var(--bs-body-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .card {
-            background-color: var(--card-bg);
-            border-color: var(--card-border);
-            transition: background-color 0.3s ease;
+        .import-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .import-dialog {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .import-preview {
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
         }
 
-        /* Theme toggle button animation */
-        #themeToggle {
-            transition: transform 0.3s ease;
+        .stats-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e9ecef;
+            height: 100%;
         }
 
-        #themeToggle:hover {
-            transform: rotate(45deg);
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .btn {
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .section-title {
+            color: #212529;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
-    <!-- GitHub Corner -->
-    <a href="https://github.com/Exios66/Python-Moral-Graph" class="github-corner" aria-label="View source on GitHub">
-        <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
-            <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-            <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-            <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
-        </svg>
-    </a>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="#">Psych Experiment Simulator</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#simulator">Simulator</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#results">Results</a>
-                    </li>
-                </ul>
+    <div class="container">
+        <!-- Chart Controls -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label for="chartTypeSelector" class="form-label">Chart Type</label>
+                <select class="form-select" id="chartTypeSelector">
+                    <option value="bar">Bar Chart</option>
+                    <option value="line">Line Chart</option>
+                    <option value="radar">Radar Chart</option>
+                    <option value="pie">Pie Chart</option>
+                </select>
             </div>
-            <div class="navbar-nav ms-auto">
-                <button class="btn btn-outline-light" id="themeToggle" aria-label="Toggle dark/light theme">
-                    <i class="bi bi-moon-fill" id="themeIcon"></i>
-                </button>
+            <div class="col-md-6">
+                <label class="form-label">Data Import/Export</label>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary flex-grow-1" id="importBtn">
+                        <i class="bi bi-upload"></i>
+                        Import Data
+                    </button>
+                    <button class="btn btn-outline-primary flex-grow-1" id="exportBtn">
+                        <i class="bi bi-download"></i>
+                        Export Data
+                    </button>
+                </div>
+                <small class="text-muted d-block mt-1">Supported formats: CSV, JSON</small>
             </div>
         </div>
-    </nav>
 
-    <div class="container mt-5">
-        <!-- About Section -->
-        <section id="about" class="mb-5">
-            <h2>About the Experiment</h2>
-            <p class="lead">
-                This simulator evaluates AI chatbot interactions across various academic disciplines using a comprehensive moral graph rubric. The simulation generates realistic interaction data to help understand patterns in AI-human academic discourse.
-            </p>
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <h4>Topics Covered</h4>
-                    <ul class="list-group" id="topics-list">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Psychology
-                            <span class="badge bg-primary rounded-pill">Core</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Sociology
-                            <span class="badge bg-primary rounded-pill">Core</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Natural Sciences
-                            <span class="badge bg-secondary rounded-pill">Extended</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Mathematics
-                            <span class="badge bg-secondary rounded-pill">Extended</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Computer Science
-                            <span class="badge bg-secondary rounded-pill">Extended</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Humanities
-                            <span class="badge bg-secondary rounded-pill">Extended</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Economics
-                            <span class="badge bg-secondary rounded-pill">Extended</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Medicine
-                            <span class="badge bg-secondary rounded-pill">Extended</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h4>Evaluation Dimensions</h4>
-                    <div id="dimensions-list">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Accuracy (25%)</h5>
-                                <p class="card-text">Measures factual correctness and precision of responses</p>
-                            </div>
+        <!-- Descriptive Statistics Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h4 class="section-title">Descriptive Statistics</h4>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-label">Mean Score</div>
+                            <div class="stats-value" id="meanScore">-</div>
                         </div>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Clarity (20%)</h5>
-                                <p class="card-text">Evaluates clarity and understandability of communication</p>
-                            </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-label">Standard Deviation</div>
+                            <div class="stats-value" id="stdDev">-</div>
                         </div>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Depth (20%)</h5>
-                                <p class="card-text">Assesses thoroughness and sophistication of responses</p>
-                            </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-label">Minimum</div>
+                            <div class="stats-value" id="minScore">-</div>
                         </div>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Ethics (20%)</h5>
-                                <p class="card-text">Considers ethical implications and moral reasoning</p>
-                            </div>
-                        </div>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Engagement (15%)</h5>
-                                <p class="card-text">Measures quality of interaction and responsiveness</p>
-                            </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-label">Maximum</div>
+                            <div class="stats-value" id="maxScore">-</div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Simulator Section -->
-        <section id="simulator" class="mb-5">
-            <h2>Run Simulation</h2>
-            <div class="card">
-                <div class="card-body">
-                    <form id="simulation-form" class="needs-validation" novalidate>
-                        <div class="mb-3">
-                            <label for="participantCount" class="form-label">Number of Participants</label>
-                            <input type="number" 
-                                   class="form-control" 
-                                   id="participantCount" 
-                                   name="participantCount"
-                                   min="1" 
-                                   max="1000" 
-                                   value="100"
-                                   required>
-                            <div class="invalid-feedback">
-                                Please enter a number between 1 and 1000.
-                            </div>
-                            <small class="form-text text-muted">
-                                Each participant will complete 5-12 interactions across different topics.
-                            </small>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-play-circle me-2"></i>Run Simulation
-                            </button>
-                        </div>
-                    </form>
+        <!-- Import Dialog -->
+        <div class="import-overlay" id="importOverlay">
+            <div class="import-dialog">
+                <h4 class="mb-3">Import Data</h4>
+                <p class="text-muted">Select a CSV or JSON file to import simulation data.</p>
+                
+                <div class="mb-3">
+                    <input type="file" class="form-control" id="importFile" accept=".csv,.json">
+                </div>
+                
+                <div class="import-preview" id="importPreview">
+                    <small class="text-muted">Data preview will appear here</small>
+                </div>
+                
+                <div class="d-flex justify-content-end gap-2">
+                    <button class="btn btn-secondary" id="cancelImport">Cancel</button>
+                    <button class="btn btn-primary" id="confirmImport" disabled>Import</button>
                 </div>
             </div>
-            <div class="loading" id="loading-spinner" style="display: none;">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2">Running simulation...</p>
-                <div class="progress mt-3" style="height: 20px;">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                         role="progressbar" 
-                         id="simulation-progress"
-                         style="width: 0%"
-                         aria-valuenow="0"
-                         aria-valuemin="0"
-                         aria-valuemax="100">0%</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Results Section -->
-        <section id="results" class="results-section mb-5" style="display: none;">
-            <h2>Simulation Results</h2>
-            
-            <!-- Chart Controls -->
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <label for="chartTypeSelector" class="form-label">Chart Type</label>
-                    <select class="form-select" id="chartTypeSelector">
-                        <option value="bar">Bar Chart</option>
-                        <option value="line">Line Chart</option>
-                        <option value="radar">Radar Chart</option>
-                        <option value="pie">Pie Chart</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="dataUpload" class="form-label">Upload Custom Data</label>
-                    <input type="file" class="form-control" id="dataUpload" accept=".csv,.json">
-                    <small class="text-muted">Supported formats: CSV, JSON</small>
-                </div>
-            </div>
-
-            <!-- Charts Container -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title" id="currentChartTitle">Analysis Results</h5>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-outline-primary" data-chart="dimensionScores">Dimension Scores</button>
-                                    <button type="button" class="btn btn-outline-primary" data-chart="topicDistribution">Topic Distribution</button>
-                                    <button type="button" class="btn btn-outline-primary" data-chart="scoreDistribution">Score Distribution</button>
-                                </div>
-                            </div>
-                            <div class="chart-container" style="position: relative; height:50vh;">
-                                <canvas id="mainChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
     </div>
-
-    <footer class="bg-light py-4 mt-5">
-        <div class="container text-center">
-            <p>Moral Graph Experiment Simulator &copy; 2024 | <a href="https://github.com/moral-graph/simulator">View on GitHub</a></p>
-        </div>
-    </footer>
-
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Papa Parse for CSV handling -->
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
     
     <script>
-        // Constants matching the Python backend
-        const SPECIALIZATIONS = [
-            "Psychology",
-            "Sociology", 
-            "Natural Sciences",
-            "Mathematics",
-            "Computer Science", 
-            "Humanities",
-            "Economics",
-            "Medicine"
-        ];
-
-        const DIMENSION_WEIGHTS = {
-            'Accuracy': 0.25,
-            'Clarity': 0.20,
-            'Depth': 0.20,
-            'Ethics': 0.20,
-            'Engagement': 0.15
+        // Initialize current data
+        let currentData = {
+            dimensionScores: {},
+            metadata: {}
         };
 
-        const SCORE_THRESHOLDS = {
-            excellent: 4.5,
-            good: 3.5,
-            acceptable: 2.5,
-            poor: 1.5
-        };
-
-        // Global variables for chart management
-        let currentData = null;
-        let currentChart = null;
-        let currentDataType = 'dimensionScores';
-        let dimensionChart = null;
-        let topicChart = null;
-        let scoreChart = null;
-
-        // Initialize UI elements
-        function initializeUI() {
-            const topicsList = document.getElementById('topics-list');
-            const dimensionsList = document.getElementById('dimensions-list');
-
-            if (topicsList && typeof TOPICS !== 'undefined') {
-                TOPICS.forEach(topic => {
-                    const li = document.createElement('li');
-                    li.className = 'list-group-item';
-                    li.textContent = topic;
-                    topicsList.appendChild(li);
-                });
-            }
-
-            if (dimensionsList && typeof DIMENSIONS !== 'undefined') {
-                DIMENSIONS.forEach(dim => {
-                    const card = document.createElement('div');
-                    card.className = 'dimension-card card mb-2';
-                    card.innerHTML = `
-                        <div class="card-body">
-                            <h6 class="card-title">${dim.name}</h6>
-                            <p class="card-text">Weight: ${dim.weight}%</p>
-                            <small class="text-muted">${dim.description}</small>
-                        </div>
-                    `;
-                    dimensionsList.appendChild(card);
-                });
-            }
-        }
-
-        // Simulation logic with error handling and validation
-        async function simulateExperiment(participantCount) {
-            try {
-                if (!Number.isInteger(participantCount) || participantCount < 10 || participantCount > 10000) {
-                    throw new Error('Participant count must be between 10 and 10000');
-                }
-
-                const dimensionScores = {};
-                
-                // Generate realistic scores with validation
-                Object.keys(DIMENSION_WEIGHTS).forEach(dimension => {
-                    const baseScore = 3.0 + (Math.random() * 1.8);
-                    const validatedScore = Math.min(Math.max(baseScore, 1.0), 5.0);
-                    dimensionScores[dimension] = parseFloat(validatedScore.toFixed(2));
-                });
-
-                // Calculate weighted average with validation
-                const averageScore = Object.entries(dimensionScores)
-                    .reduce((acc, [dim, score]) => {
-                        const weight = DIMENSION_WEIGHTS[dim];
-                        if (typeof weight !== 'number' || weight < 0 || weight > 1) {
-                            throw new Error(`Invalid weight for dimension: ${dim}`);
-                        }
-                        return acc + (score * weight);
-                    }, 0);
-
-                const completionRate = 95 + (Math.random() * 5);
-                const interactionsPerParticipant = Math.floor(5 + (Math.random() * 7));
-
-                return {
-                    dimensionScores,
-                    totalParticipants: participantCount,
-                    averageScore: parseFloat(averageScore.toFixed(2)),
-                    completionRate: parseFloat(completionRate.toFixed(1)),
-                    totalInteractions: participantCount * interactionsPerParticipant,
-                    averageInteractionsPerParticipant: interactionsPerParticipant,
-                    timestamp: new Date().toISOString()
-                };
-            } catch (error) {
-                console.error('Simulation error:', error);
-                throw new Error(`Failed to simulate experiment: ${error.message}`);
-            }
-        }
-
-        // Form submission handler with proper error handling
-        document.getElementById('simulation-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Utility functions for statistics
+        function calculateStats(data) {
+            const values = Object.values(data.dimensionScores);
+            if (values.length === 0) return { mean: 0, stdDev: 0, min: 0, max: 0 };
             
-            const participantCount = parseInt(document.getElementById('participantCount').value);
-            const loadingSpinner = document.getElementById('loading-spinner');
-            const resultsSection = document.querySelector('.results-section');
-            const progressBar = document.getElementById('simulation-progress');
-            
-            loadingSpinner.style.display = 'block';
-            resultsSection.style.display = 'none';
+            const mean = values.reduce((a, b) => a + b, 0) / values.length;
+            const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+            const stdDev = Math.sqrt(variance);
+            const min = Math.min(...values);
+            const max = Math.max(...values);
 
-            let progressInterval;
-            try {
-                // Simulate progress
-                let progress = 0;
-                progressInterval = setInterval(() => {
-                    progress = Math.min(progress + 5, 95);
-                    progressBar.style.width = `${progress}%`;
-                    progressBar.textContent = `${progress}%`;
-                    progressBar.setAttribute('aria-valuenow', progress);
-                }, 100);
-
-                const results = await simulateExperiment(participantCount);
-                
-                // Complete progress bar
-                progressBar.style.width = '100%';
-                progressBar.textContent = '100%';
-                progressBar.setAttribute('aria-valuenow', 100);
-                
-                await displayResults(results);
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert(`Error running simulation: ${error.message}`);
-            } finally {
-                clearInterval(progressInterval);
-                loadingSpinner.style.display = 'none';
-                resultsSection.style.display = 'block';
-            }
-        });
-
-        // Results display with error handling
-        async function displayResults(data) {
-            try {
-                if (!data) {
-                    throw new Error('No data provided to display');
-                }
-                
-                currentData = data; // Set the current data
-                
-                // Update the chart title
-                document.getElementById('currentChartTitle').textContent = 
-                    currentDataType.replace(/([A-Z])/g, ' $1').trim();
-                
-                // Update the main chart with the current data and chart type
-                updateMainChart(data, document.getElementById('chartTypeSelector').value);
-                
-                // Show the results section
-                document.querySelector('.results-section').style.display = 'block';
-            } catch (error) {
-                console.error('Error displaying results:', error);
-                alert('Error displaying results. Please try again.');
-            }
+            return { mean, stdDev, min, max };
         }
 
-        function updateResultsTable(data) {
-            const tableBody = document.getElementById('overall-stats');
-            if (!tableBody) return;
-
-            tableBody.innerHTML = '';
-            
-            const formatValue = (value) => {
-                if (typeof value === 'number') return value.toFixed(2);
-                if (value instanceof Date) return value.toLocaleString();
-                return value;
-            };
-
-            Object.entries(data).forEach(([key, value]) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${key}:</strong></td>
-                    <td>${formatValue(value)}</td>
-                `;
-                tableBody.appendChild(row);
-            });
+        function updateStats(data) {
+            const stats = calculateStats(data);
+            document.getElementById('meanScore').textContent = stats.mean.toFixed(2);
+            document.getElementById('stdDev').textContent = stats.stdDev.toFixed(2);
+            document.getElementById('minScore').textContent = stats.min.toFixed(2);
+            document.getElementById('maxScore').textContent = stats.max.toFixed(2);
         }
 
-        function generateTopicData() {
-            return SPECIALIZATIONS.map(topic => ({
-                topic: topic,
-                count: Math.floor(Math.random() * 50) + 10
-            }));
-        }
-
-        function generateScoreData() {
-            return {
-                excellent: Math.floor(Math.random() * 30) + 20,
-                good: Math.floor(Math.random() * 40) + 30,
-                acceptable: Math.floor(Math.random() * 20) + 10,
-                poor: Math.floor(Math.random() * 10)
-            };
-        }
-
-        function updateCharts(data, chartType = 'bar') {
-            // Update dimension scores chart
-            const dimensionCtx = document.getElementById('dimensionScoresChart').getContext('2d');
-            const topicCtx = document.getElementById('topicDistributionChart').getContext('2d');
-            const scoreCtx = document.getElementById('scoreDistributionChart').getContext('2d');
-
-            // Destroy existing charts
-            [dimensionChart, topicChart, scoreChart].forEach(chart => {
-                if (chart) chart.destroy();
-            });
-
-            // Generate additional data
-            const topicData = generateTopicData();
-            const scoreData = generateScoreData();
-
-            // Create new charts
-            dimensionChart = new Chart(dimensionCtx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(data.dimensionScores),
-                    datasets: [{
-                        label: 'Dimension Scores',
-                        data: Object.values(data.dimensionScores),
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 5,
-                            ticks: {
-                                stepSize: 0.5
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => {
-                                    const label = context.dataset.label || '';
-                                    const value = context.parsed.y.toFixed(2);
-                                    return `${label}: ${value}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            topicChart = new Chart(topicCtx, {
-                type: 'bar',
-                data: {
-                    labels: topicData.map(item => item.topic),
-                    datasets: [{
-                        label: 'Topic Distribution',
-                        data: topicData.map(item => item.count),
-                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: Math.max(...topicData.map(item => item.count)),
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => {
-                                    const label = context.dataset.label || '';
-                                    const value = context.parsed.y.toFixed(2);
-                                    return `${label}: ${value}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            scoreChart = new Chart(scoreCtx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(scoreData),
-                    datasets: [{
-                        label: 'Score Distribution',
-                        data: Object.values(scoreData),
-                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: Math.max(...Object.values(scoreData)),
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => {
-                                    const label = context.dataset.label || '';
-                                    const value = context.parsed.y.toFixed(2);
-                                    return `${label}: ${value}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Download results handler with error handling
-        document.getElementById('downloadResults').addEventListener('click', async () => {
-            try {
-                const participantCount = parseInt(document.getElementById('participantCount').value);
-                const results = await simulateExperiment(participantCount);
-                
-                const csvRows = [
-                    ['Dimension', 'Score', 'Weight', 'Weighted Score'],
-                    ...Object.entries(results.dimensionScores).map(([dimension, score]) => {
-                        const weight = DIMENSION_WEIGHTS[dimension];
-                        const weightedScore = score * weight;
-                        return [
-                            dimension,
-                            score.toFixed(2),
-                            weight.toFixed(2),
-                            weightedScore.toFixed(2)
-                        ];
-                    }),
-                    [],
-                    ['Overall Statistics'],
-                    ['Total Participants', results.totalParticipants],
-                    ['Average Score', results.averageScore.toFixed(2)],
-                    ['Completion Rate', `${results.completionRate}%`],
-                    ['Total Interactions', results.totalInteractions],
-                    ['Average Interactions Per Participant', results.averageInteractionsPerParticipant],
-                    ['Timestamp', results.timestamp]
-                ];
-
-                const csvContent = "data:text/csv;charset=utf-8," + 
-                    csvRows.map(row => row.join(',')).join('\n');
-                
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `simulation_results_${new Date().toISOString()}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } catch (error) {
-                console.error('Error downloading results:', error);
-                alert('Error generating download. Please try again.');
-            }
-        });
-
-        // Run new simulation handler
-        document.getElementById('runNewSimulation').addEventListener('click', () => {
-            document.querySelector('.results-section').style.display = 'none';
-            document.getElementById('simulation-form').reset();
-            [dimensionChart, topicChart, scoreChart].forEach(chart => {
-                if (chart) chart.destroy();
-            });
-        });
-
-        // Initialize UI on load
-        document.addEventListener('DOMContentLoaded', initializeUI);
-
-        // File upload handler
-        document.getElementById('dataUpload').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            try {
-                const data = await parseUploadedFile(file);
-                displayResults(data);
-            } catch (error) {
-                console.error('Error parsing file:', error);
-                alert('Error parsing file. Please check the format and try again.');
-            }
-        });
-
-        // Parse uploaded file
-        async function parseUploadedFile(file) {
+        // File reading utility
+        function readFileContent(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                
-                reader.onload = async (e) => {
-                    try {
-                        if (file.name.endsWith('.csv')) {
-                            Papa.parse(e.target.result, {
-                                header: true,
-                                complete: (results) => {
-                                    resolve(processUploadedData(results.data));
-                                },
-                                error: reject
-                            });
-                        } else if (file.name.endsWith('.json')) {
-                            const data = JSON.parse(e.target.result);
-                            resolve(processUploadedData(data));
-                        } else {
-                            reject(new Error('Unsupported file format'));
-                        }
-                    } catch (error) {
-                        reject(error);
-                    }
-                };
-                
-                reader.onerror = () => reject(new Error('File reading failed'));
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(e);
+                reader.readAsText(file);
+            });
+        }
+
+        // Export functionality
+        function exportData(data, format = 'csv') {
+            const filename = `simulation_results.${format}`;
+            let content = '';
+
+            if (format === 'csv') {
+                content = 'Dimension Scores\n';
+                content += 'Dimension,Score\n';
+                Object.entries(data.dimensionScores).forEach(([dim, score]) => {
+                    content += `${dim},${score}\n`;
+                });
+                content += '\nMetadata\n';
+                Object.entries(data.metadata).forEach(([key, value]) => {
+                    content += `${key},${value}\n`;
+                });
+            } else {
+                content = JSON.stringify(data, null, 2);
+            }
+
+            const blob = new Blob([content], { type: format === 'csv' ? 'text/csv' : 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Import functionality
+        function showImportDialog() {
+            document.getElementById('importOverlay').style.display = 'flex';
+            document.getElementById('importFile').value = '';
+            document.getElementById('importPreview').innerHTML = '<small class="text-muted">Data preview will appear here</small>';
+            document.getElementById('confirmImport').disabled = true;
+        }
+        
+        function hideImportDialog() {
+            document.getElementById('importOverlay').style.display = 'none';
+        }
+        
+        async function handleFilePreview(file) {
+            try {
+                const content = await readFileContent(file);
+                let preview = '';
                 
                 if (file.name.endsWith('.csv')) {
-                    reader.readAsText(file);
+                    const lines = content.split('\n').slice(0, 5);
+                    preview = lines.join('\n');
                 } else {
-                    reader.readAsText(file);
-                }
-            });
-        }
-
-        // Process uploaded data
-        function processUploadedData(data) {
-            try {
-                // Validate data is an array or object
-                if (!data || (typeof data !== 'object' && !Array.isArray(data))) {
-                    throw new Error('Invalid data format');
-                }
-
-                // Initialize processed data structure
-                const processedData = {
-                    dimensionScores: {},
-                    topicDistribution: {},
-                    scoreDistribution: {}
-                };
-
-                // Convert array data to expected format if needed
-                const dataArray = Array.isArray(data) ? data : [data];
-
-                // Process dimension scores
-                const dimensions = ['clarity', 'depth', 'accuracy', 'relevance'];
-                dimensions.forEach(dim => {
-                    const scores = dataArray.map(item => parseFloat(item[dim])).filter(score => !isNaN(score));
-                    processedData.dimensionScores[dim] = scores.length ? 
-                        scores.reduce((a,b) => a + b, 0) / scores.length : 0;
-                });
-
-                // Process topic distribution
-                const topics = {};
-                dataArray.forEach(item => {
-                    if (item.topic) {
-                        topics[item.topic] = (topics[item.topic] || 0) + 1;
-                    }
-                });
-                processedData.topicDistribution = topics;
-
-                // Process score distribution
-                const scores = {};
-                dataArray.forEach(item => {
-                    const score = Math.round(parseFloat(item.score || 0));
-                    if (!isNaN(score)) {
-                        scores[score] = (scores[score] || 0) + 1;
-                    }
-                });
-                processedData.scoreDistribution = scores;
-
-                return processedData;
-
-            } catch (error) {
-                console.error('Error processing data:', error);
-                throw new Error('Failed to process data: ' + error.message);
-            }
-        }
-
-        // Update chart display
-        function updateMainChart(data, chartType) {
-            try {
-                if (!data || !chartType) {
-                    throw new Error('Invalid chart parameters');
-                }
-
-                const canvas = document.getElementById('mainChart');
-                if (!canvas) {
-                    throw new Error('Chart canvas not found');
-                }
-
-                const ctx = canvas.getContext('2d');
-                
-                if (currentChart) {
-                    currentChart.destroy();
-                }
-
-                const chartData = prepareChartData(data, currentDataType);
-                if (!chartData) {
-                    throw new Error('Failed to prepare chart data');
+                    const data = JSON.parse(content);
+                    preview = JSON.stringify(data, null, 2).slice(0, 200) + '...';
                 }
                 
-                currentChart = new Chart(ctx, {
-                    type: chartType,
-                    data: chartData,
-                    options: getChartOptions(currentDataType)
-                });
-
-            } catch (error) {
-                console.error('Error updating chart:', error);
-                throw new Error('Failed to update chart: ' + error.message);
-            }
-        }
-
-        // Prepare chart data based on type
-        function prepareChartData(data, dataType) {
-            try {
-                if (!data || !dataType) {
-                    throw new Error('Invalid data parameters');
-                }
-
-                const colors = {
-                    dimension: {
-                        bg: 'rgba(54, 162, 235, 0.5)',
-                        border: 'rgba(54, 162, 235, 1)'
-                    },
-                    topic: {
-                        bg: 'rgba(75, 192, 192, 0.5)',
-                        border: 'rgba(75, 192, 192, 1)'
-                    },
-                    score: {
-                        bg: 'rgba(153, 102, 255, 0.5)',
-                        border: 'rgba(153, 102, 255, 1)'
-                    }
-                };
-
-                switch(dataType) {
-                    case 'dimensionScores':
-                        return {
-                            labels: Object.keys(data.dimensionScores),
-                            datasets: [{
-                                label: 'Dimension Scores',
-                                data: Object.values(data.dimensionScores),
-                                backgroundColor: colors.dimension.bg,
-                                borderColor: colors.dimension.border,
-                                borderWidth: 1
-                            }]
-                        };
-                        
-                    case 'topicDistribution':
-                        return {
-                            labels: Object.keys(data.topicDistribution),
-                            datasets: [{
-                                label: 'Topic Distribution',
-                                data: Object.values(data.topicDistribution),
-                                backgroundColor: colors.topic.bg,
-                                borderColor: colors.topic.border,
-                                borderWidth: 1
-                            }]
-                        };
-                        
-                    case 'scoreDistribution':
-                        return {
-                            labels: Object.keys(data.scoreDistribution),
-                            datasets: [{
-                                label: 'Score Distribution',
-                                data: Object.values(data.scoreDistribution),
-                                backgroundColor: colors.score.bg,
-                                borderColor: colors.score.border,
-                                borderWidth: 1
-                            }]
-                        };
-                        
-                    default:
-                        throw new Error('Invalid chart type');
-                }
-
-            } catch (error) {
-                console.error('Error preparing chart data:', error);
-                throw new Error('Failed to prepare chart data: ' + error.message);
-            }
-        }
-
-        // Get chart options based on type
-        function getChartOptions(dataType) {
-            try {
-                if (!dataType) {
-                    throw new Error('Chart type not specified');
-                }
-
-                const isDarkTheme = document.documentElement.getAttribute('data-bs-theme') === 'dark';
-                const textColor = isDarkTheme ? '#f8f9fa' : '#212529';
-                const gridColor = isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                document.getElementById('importPreview').innerHTML = `
+                    <pre style="margin: 0;">${preview}</pre>
+                `;
+                document.getElementById('confirmImport').disabled = false;
                 
-                const baseOptions = {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 750,
-                        easing: 'easeInOutQuart'
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: textColor,
-                                precision: 0
-                            },
-                            grid: {
-                                color: gridColor
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: textColor
-                            },
-                            grid: {
-                                color: gridColor
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: textColor,
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-                        tooltip: {
-                            enabled: true,
-                            mode: 'index',
-                            intersect: false,
-                            callbacks: {
-                                label: (context) => {
-                                    const label = context.dataset.label || '';
-                                    const value = context.parsed.y.toFixed(2);
-                                    return `${label}: ${value}`;
-                                }
-                            }
-                        }
-                    }
-                };
-
-                switch(dataType) {
-                    case 'dimensionScores':
-                        return {
-                            ...baseOptions,
-                            scales: {
-                                ...baseOptions.scales,
-                                y: {
-                                    ...baseOptions.scales.y,
-                                    max: 5,
-                                    ticks: {
-                                        ...baseOptions.scales.y.ticks,
-                                        stepSize: 0.5
-                                    }
-                                }
-                            }
-                        };
-                        
-                    case 'topicDistribution':
-                    case 'scoreDistribution':
-                        return {
-                            ...baseOptions,
-                            scales: {
-                                ...baseOptions.scales,
-                                y: {
-                                    ...baseOptions.scales.y,
-                                    ticks: {
-                                        ...baseOptions.scales.y.ticks,
-                                        stepSize: 1
-                                    }
-                                }
-                            }
-                        };
-                        
-                    default:
-                        throw new Error('Invalid chart type');
-                }
-
             } catch (error) {
-                console.error('Error getting chart options:', error);
-                throw new Error('Failed to get chart options: ' + error.message);
+                document.getElementById('importPreview').innerHTML = `
+                    <div class="text-danger">Error previewing file: ${error.message}</div>
+                `;
+                document.getElementById('confirmImport').disabled = true;
             }
         }
-
-        // Chart type selection handler
-        document.querySelectorAll('[data-chart]').forEach(button => {
-            button.addEventListener('click', (e) => {
-                try {
-                    const chartType = e.target.dataset.chart;
-                    if (!chartType) {
-                        throw new Error('Chart type not specified');
-                    }
-
-                    currentDataType = chartType;
+        
+        // Parse uploaded file
+        async function parseUploadedFile(file) {
+            const content = await readFileContent(file);
+            
+            if (file.name.endsWith('.csv')) {
+                return parseCSV(content);
+            } else {
+                return JSON.parse(content);
+            }
+        }
+        
+        // Enhanced CSV parsing
+        function parseCSV(content) {
+            const lines = content.split('\n').map(line => line.trim()).filter(line => line);
+            const result = {
+                dimensionScores: {},
+                metadata: {}
+            };
+            
+            let currentSection = '';
+            
+            for (let i = 0; i < lines.length; i++) {
+                const cells = lines[i].split(',').map(cell => cell.trim());
+                
+                if (cells[0] === 'Dimension Scores' || cells[0] === 'Metadata') {
+                    currentSection = cells[0];
+                    continue;
+                }
+                
+                if (cells.length >= 2 && cells[0] !== 'Dimension' && cells[0] !== 'Score') {
+                    const [key, value] = cells;
                     
-                    const titleElement = document.getElementById('currentChartTitle');
-                    if (titleElement) {
-                        titleElement.textContent = chartType.replace(/([A-Z])/g, ' $1').trim();
+                    if (currentSection === 'Dimension Scores') {
+                        result.dimensionScores[key] = parseFloat(value);
+                    } else if (currentSection === 'Metadata') {
+                        result.metadata[key] = isNaN(value) ? value : parseFloat(value);
                     }
-
-                    if (currentData) {
-                        const chartTypeSelector = document.getElementById('chartTypeSelector');
-                        if (!chartTypeSelector) {
-                            throw new Error('Chart type selector not found');
-                        }
-                        updateMainChart(currentData, chartTypeSelector.value);
-                    }
-
-                } catch (error) {
-                    console.error('Error handling chart selection:', error);
-                    alert('Failed to update chart selection. Please try again.');
                 }
-            });
-        });
-
-        document.getElementById('chartTypeSelector').addEventListener('change', (e) => {
-            if (currentData) {
-                updateMainChart(currentData, e.target.value);
             }
-        });
-
-        // Event listeners and UI state management
+            
+            return result;
+        }
+        
+        // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize form validation
-            const form = document.getElementById('simulation-form');
-            const participantInput = document.getElementById('participantCount');
+            // Import dialog
+            document.getElementById('importBtn').addEventListener('click', showImportDialog);
+            document.getElementById('cancelImport').addEventListener('click', hideImportDialog);
             
-            // Form validation
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                if (!form.checkValidity()) {
-                    e.stopPropagation();
-                    form.classList.add('was-validated');
-                    return;
+            // Export functionality
+            document.getElementById('exportBtn').addEventListener('click', () => {
+                const format = window.confirm('Export as CSV? Click Cancel for JSON') ? 'csv' : 'json';
+                exportData(currentData, format);
+            });
+            
+            document.getElementById('importFile').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFilePreview(file);
                 }
-                
-                const participantCount = parseInt(participantInput.value);
-                if (isNaN(participantCount) || participantCount <= 0) {
-                    alert('Please enter a valid number of participants');
-                    return;
-                }
+            });
+            
+            document.getElementById('confirmImport').addEventListener('click', async () => {
+                const file = document.getElementById('importFile').files[0];
+                if (!file) return;
                 
                 try {
-                    await runSimulation(participantCount);
+                    const data = await parseUploadedFile(file);
+                    currentData = data;
+                    hideImportDialog();
+                    updateStats(data);
                 } catch (error) {
-                    console.error('Simulation error:', error);
-                    alert('Error running simulation. Please try again.');
+                    alert('Error importing file: ' + error.message);
                 }
             });
-
-            // Navigation button listeners
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = e.target.getAttribute('href')?.substring(1);
-                    if (targetId) {
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            targetElement.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
-                });
-            });
-
-            // Chart type selector
-            const chartTypeSelector = document.getElementById('chartTypeSelector');
-            if (chartTypeSelector) {
-                chartTypeSelector.addEventListener('change', (e) => {
-                    if (currentData) {
-                        updateMainChart(currentData, e.target.value);
-                    }
-                });
-            }
-
-            // Data view buttons
-            document.querySelectorAll('[data-chart]').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const btnGroup = e.target.closest('.btn-group');
-                    if (btnGroup) {
-                        // Remove active class from all buttons
-                        btnGroup.querySelectorAll('.btn').forEach(btn => {
-                            btn.classList.remove('active');
-                        });
-                        // Add active class to clicked button
-                        e.target.classList.add('active');
-                    }
-                    
-                    currentDataType = e.target.dataset.chart;
-                    const chartTitle = document.getElementById('currentChartTitle');
-                    if (chartTitle) {
-                        chartTitle.textContent = currentDataType.replace(/([A-Z])/g, ' $1').trim();
-                    }
-                    
-                    if (currentData && chartTypeSelector) {
-                        updateMainChart(currentData, chartTypeSelector.value);
-                    }
-                });
-            });
-
-            // File upload handler
-            const dataUpload = document.getElementById('dataUpload');
-            if (dataUpload) {
-                dataUpload.addEventListener('change', async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-
-                    try {
-                        const data = await parseUploadedFile(file);
-                        if (data) {
-                            displayResults(data);
-                        }
-                    } catch (error) {
-                        console.error('Error parsing file:', error);
-                        alert('Error parsing file. Please check the format and try again.');
-                    } finally {
-                        // Reset file input to allow uploading same file again
-                        dataUpload.value = '';
-                    }
-                });
-            }
-
-            // Initialize theme
-            initializeTheme();
-
-            // Add theme toggle listener
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-        });
-
-        // Handle simulation running
-        async function runSimulation(participantCount) {
-            const loadingSpinner = document.getElementById('loading-spinner');
-            const resultsSection = document.querySelector('.results-section');
-            const progressBar = document.getElementById('simulation-progress');
             
-            if (!loadingSpinner || !resultsSection || !progressBar) {
-                throw new Error('Required UI elements not found');
-            }
-
-            // Reset UI state
-            loadingSpinner.style.display = 'block';
-            resultsSection.style.display = 'none';
-            progressBar.style.width = '0%';
-            progressBar.textContent = '0%';
-            progressBar.setAttribute('aria-valuenow', '0');
-
-            let progressInterval;
-            try {
-                // Simulate progress
-                let progress = 0;
-                progressInterval = setInterval(() => {
-                    progress = Math.min(progress + 5, 95); // Cap at 95% until complete
-                    progressBar.style.width = `${progress}%`;
-                    progressBar.textContent = `${progress}%`;
-                    progressBar.setAttribute('aria-valuenow', progress.toString());
-                }, 100);
-
-                // Validate participant count
-                if (!Number.isInteger(participantCount) || participantCount < 10 || participantCount > 10000) {
-                    throw new Error('Invalid participant count. Must be between 10 and 10000.');
+            // Close import dialog when clicking outside
+            document.getElementById('importOverlay').addEventListener('click', (e) => {
+                if (e.target.id === 'importOverlay') {
+                    hideImportDialog();
                 }
+            });
 
-                // Simulate processing time with exponential backoff
-                const simulationDelay = Math.min(2000 + Math.floor(participantCount / 100) * 500, 5000);
-                await new Promise(resolve => setTimeout(resolve, simulationDelay));
-                
-                const results = await simulateExperiment(participantCount);
-                if (!results || typeof results !== 'object') {
-                    throw new Error('Invalid simulation results');
-                }
-
-                currentData = results;
-                await displayResults(results);
-
-                // Complete progress bar
-                progressBar.style.width = '100%';
-                progressBar.textContent = '100%';
-                progressBar.setAttribute('aria-valuenow', '100');
-
-                return results;
-
-            } catch (error) {
-                console.error('Simulation error:', error);
-                alert(`Simulation failed: ${error.message}`);
-                throw error;
-            } finally {
-                if (progressInterval) {
-                    clearInterval(progressInterval);
-                }
-                loadingSpinner.style.display = 'none';
-            }
-        }
-
-        // Theme management
-        function initializeTheme() {
-            try {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const savedTheme = localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light');
-                
-                if (!['light', 'dark'].includes(savedTheme)) {
-                    throw new Error('Invalid theme value');
-                }
-
-                document.documentElement.setAttribute('data-bs-theme', savedTheme);
-                updateThemeIcon(savedTheme);
-                updateUITheme(savedTheme);
-
-            } catch (error) {
-                console.error('Error initializing theme:', error);
-                // Fallback to light theme if there's an error loading saved theme
-                // This ensures a consistent default experience
-                console.warn('Falling back to light theme due to error:', error.message);
-                const fallbackTheme = 'light';
-                document.documentElement.setAttribute('data-bs-theme', fallbackTheme);
-                updateThemeIcon(fallbackTheme);
-                updateUITheme(fallbackTheme);
-            }
-        }
-
-        function toggleTheme() {
-            try {
-                const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-                if (!currentTheme || !['light', 'dark'].includes(currentTheme)) {
-                    throw new Error('Invalid current theme');
-                }
-
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                // Update theme
-                document.documentElement.setAttribute('data-bs-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                updateThemeIcon(newTheme);
-                updateUITheme(newTheme);
-                
-                // Update charts
-                const charts = [
-                    { instance: dimensionChart, type: 'dimensionScores' },
-                    { instance: topicChart, type: 'topicDistribution' },
-                    { instance: scoreChart, type: 'scoreDistribution' }
-                ];
-
-                charts.forEach(({instance, type}) => {
-                    if (instance?.update) {
-                        try {
-                            instance.options = getChartOptions(type);
-                            instance.update('none'); // Update without animation
-                        } catch (error) {
-                            console.error(`Error updating chart for ${type}:`, error);
-                        }
-                    }
-                });
-
-                // Update main chart if data exists
-                if (currentData) {
-                    const chartTypeSelector = document.getElementById('chartTypeSelector');
-                    if (chartTypeSelector?.value) {
-                        updateMainChart(currentData, chartTypeSelector.value);
-                    }
-                }
-
-            } catch (error) {
-                console.error('Error toggling theme:', error);
-                // Fallback to light theme
-                const fallbackTheme = 'light';
-                document.documentElement.setAttribute('data-bs-theme', fallbackTheme);
-                updateThemeIcon(fallbackTheme);
-                updateUITheme(fallbackTheme);
-            }
-        }
-
-        function updateThemeIcon(theme) {
-            try {
-                const icon = document.getElementById('themeIcon');
-                if (!icon) {
-                    throw new Error('Theme icon element not found');
-                }
-                
-                // Update icon class and aria-label
-                icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
-                icon.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
-                
-            } catch (error) {
-                console.error('Error updating theme icon:', error);
-            }
-        }
-
-        function updateUITheme(theme) {
-            try {
-                if (!['light', 'dark'].includes(theme)) {
-                    throw new Error('Invalid theme value');
-                }
-
-                const root = document.documentElement;
-                const isDark = theme === 'dark';
-
-                // Update CSS variables for theme
-                const themeColors = {
-                    chartGrid: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-                    chartText: isDark ? '#f8f9fa' : '#212529',
-                    chartBackground: isDark ? '#343a40' : '#ffffff',
-                    borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                };
-
-                Object.entries(themeColors).forEach(([key, value]) => {
-                    root.style.setProperty(`--${key}`, value);
-                });
-
-            } catch (error) {
-                console.error('Error updating UI theme:', error);
-                // Fallback to light theme values
-                const root = document.documentElement;
-                root.style.setProperty('--chartGrid', 'rgba(0, 0, 0, 0.1)');
-                root.style.setProperty('--chartText', '#212529');
-                root.style.setProperty('--chartBackground', '#ffffff');
-                root.style.setProperty('--borderColor', 'rgba(0, 0, 0, 0.1)');
-            }
-        }
+            // Initialize stats with empty data
+            updateStats(currentData);
+        });
     </script>
 </body>
 </html>
