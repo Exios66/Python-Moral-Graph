@@ -241,10 +241,10 @@
                 </div>
             </div>
             <div class="mt-4">
-                <button class="btn btn-success" id="downloadResults">
+                <button type="button" class="btn btn-success" id="downloadResults">
                     <i class="bi bi-download me-2"></i>Download Results (CSV)
                 </button>
-                <button class="btn btn-primary ms-2" id="runNewSimulation">
+                <button type="button" class="btn btn-primary ms-2" id="runNewSimulation">
                     <i class="bi bi-arrow-repeat me-2"></i>Run New Simulation
                 </button>
             </div>
@@ -363,218 +363,52 @@
         });
 
         function displayResults(data) {
-            // Update overall stats with more detailed metrics
-            document.getElementById('overall-stats').innerHTML = `
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Participation Statistics</h5>
-                                <p><strong>Total Participants:</strong> ${data.totalParticipants}</p>
-                                <p><strong>Completion Rate:</strong> ${data.completionRate}%</p>
-                                <p><strong>Average Overall Score:</strong> ${data.averageScore.toFixed(2)}/5.0</p>
-                                <p><strong>Standard Deviation:</strong> ${(Math.random() * 0.5 + 0.2).toFixed(2)}</p>
-                                <p><strong>Confidence Interval (95%):</strong> ±${(Math.random() * 0.3 + 0.1).toFixed(2)}</p>
+            // Update results table and visualization
+            updateResultsTable(data);
+            updateVisualization(data);
+
+            // Add container for results display
+            document.querySelector('.results-section').innerHTML = `
+                <div class="container mt-4">
+                    <div class="row">
+                        <!-- Results Table -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Results Table</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="resultsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Parameter</th>
+                                                    <th>Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="resultsTableBody">
+                                                <!-- Data will be populated dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Score Distribution</h5>
-                                <p><strong>Median Score:</strong> ${(data.averageScore + (Math.random() * 0.4 - 0.2)).toFixed(2)}</p>
-                                <p><strong>Mode:</strong> ${(data.averageScore + (Math.random() * 0.4 - 0.2)).toFixed(2)}</p>
-                                <p><strong>Range:</strong> ${(Math.random() * 2 + 1).toFixed(2)}</p>
-                                <p><strong>Skewness:</strong> ${(Math.random() * 0.6 - 0.3).toFixed(2)}</p>
-                                <p><strong>Kurtosis:</strong> ${(Math.random() * 1 + 2).toFixed(2)}</p>
+                        
+                        <!-- Visualization -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Visualization</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="resultsChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
-
-            // Update charts
-            const barCtx = document.getElementById('dimensionScoresChart').getContext('2d');
-            const radarCtx = document.getElementById('dimensionRadarChart').getContext('2d');
-            const lineCtx = document.getElementById('trendChart').getContext('2d');
-            const pieCtx = document.getElementById('distributionChart').getContext('2d');
-
-            const dimensionNames = Object.keys(data.dimensionScores);
-            const scores = Object.values(data.dimensionScores);
-            const weights = DIMENSIONS.map(d => d.weight);
-
-            // Enhanced Bar Chart
-            new Chart(barCtx, {
-                type: 'bar',
-                data: {
-                    labels: dimensionNames,
-                    datasets: [{
-                        label: 'Average Score',
-                        data: scores,
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }, {
-                        label: 'Weight',
-                        data: weights,
-                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1,
-                        type: 'line'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Dimension Scores Distribution with Weights'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    label += context.parsed.y.toFixed(2);
-                                    return label;
-                                }
-                            }
-                        },
-                        legend: {
-                            position: 'top',
-                        },
-                        datalabels: {
-                            anchor: 'end',
-                            align: 'top',
-                            formatter: Math.round
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 5,
-                            title: {
-                                display: true,
-                                text: 'Score'
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Dimensions'
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Radar Chart
-            new Chart(radarCtx, {
-                type: 'radar',
-                data: {
-                    labels: dimensionNames,
-                    datasets: [{
-                        label: 'Scores',
-                        data: scores,
-                        fill: true,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgb(255, 99, 132)',
-                        pointBackgroundColor: 'rgb(255, 99, 132)',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgb(255, 99, 132)'
-                    }]
-                },
-                options: {
-                    elements: {
-                        line: {
-                            borderWidth: 3
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Dimension Scores Radar'
-                        }
-                    }
-                }
-            });
-
-            // Line Chart for Trends
-            new Chart(lineCtx, {
-                type: 'line',
-                data: {
-                    labels: dimensionNames,
-                    datasets: [{
-                        label: 'Score Trend',
-                        data: scores,
-                        fill: false,
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Score Progression'
-                        }
-                    }
-                }
-            });
-
-            // Pie Chart for Weight Distribution
-            new Chart(pieCtx, {
-                type: 'pie',
-                data: {
-                    labels: dimensionNames,
-                    datasets: [{
-                        data: weights,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.5)',
-                            'rgba(54, 162, 235, 0.5)',
-                            'rgba(255, 206, 86, 0.5)',
-                            'rgba(75, 192, 192, 0.5)',
-                            'rgba(153, 102, 255, 0.5)',
-                            'rgba(255, 159, 64, 0.5)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Dimension Weights Distribution'
-                        },
-                        legend: {
-                            position: 'right'
-                        }
-                    }
-                }
-            });
         }
 
         // Download results handler with enhanced data
