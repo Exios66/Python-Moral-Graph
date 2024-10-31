@@ -363,52 +363,50 @@
         });
 
         function displayResults(data) {
-            // Update results table and visualization
             updateResultsTable(data);
             updateVisualization(data);
+            document.querySelector('.results-section').style.display = 'block';
+        }
 
-            // Add container for results display
-            document.querySelector('.results-section').innerHTML = `
-                <div class="container mt-4">
-                    <div class="row">
-                        <!-- Results Table -->
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5>Results Table</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped" id="resultsTable">
-                                            <thead>
-                                                <tr>
-                                                    <th>Parameter</th>
-                                                    <th>Value</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="resultsTableBody">
-                                                <!-- Data will be populated dynamically -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Visualization -->
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5>Visualization</h5>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="resultsChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+        function updateResultsTable(data) {
+            const tableBody = document.getElementById('overall-stats');
+            tableBody.innerHTML = '';
+            
+            Object.entries(data).forEach(([key, value]) => {
+                const row = document.createElement('div');
+                row.className = 'mb-2';
+                row.innerHTML = `
+                    <strong>${key}:</strong> ${typeof value === 'number' ? value.toFixed(2) : value}
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function updateVisualization(data) {
+            // Update dimension scores chart
+            const dimensionCtx = document.getElementById('dimensionScoresChart').getContext('2d');
+            new Chart(dimensionCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(data.dimensionScores),
+                    datasets: [{
+                        label: 'Dimension Scores',
+                        data: Object.values(data.dimensionScores),
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5
+                        }
+                    }
+                }
+            });
         }
 
         // Download results handler with enhanced data
