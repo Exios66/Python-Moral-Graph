@@ -13,6 +13,9 @@
             background-color: #0C0C0C;
             color: #E5E5E5;
             font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .cyberpunk-container {
             background-color: rgba(0, 255, 65, 0.05);
@@ -99,12 +102,805 @@
             align-items: center;
             gap: 10px;
         }
+        .cyberpunk-header {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-bottom: 2px solid #00FF41;
+            padding: 1rem 0;
+        }
+        .cyberpunk-footer {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-top: 2px solid #00FF41;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+        .nav-link {
+            color: #00FF41 !important;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #E5E5E5 !important;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        .github-link {
+            color: #00FF41;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .github-link:hover {
+            color: #E5E5E5;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        body {
+            background-color: #0C0C0C;
+            color: #E5E5E5;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .cyberpunk-container {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .cyberpunk-btn {
+            background-color: transparent;
+            border: 2px solid #00FF41;
+            color: #00FF41;
+            padding: 8px 16px;
+            transition: all 0.3s;
+        }
+        .cyberpunk-btn:hover {
+            background-color: #00FF41;
+            color: #0C0C0C;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background-color: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00FF41;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #importOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .import-dialog {
+            background-color: #1A1A1A;
+            border: 2px solid #00FF41;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            width: 90%;
+        }
+        #importPreview {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.9em;
+        }
+        select.cyberpunk-select {
+            background-color: #1A1A1A;
+            border: 1px solid #00FF41;
+            color: #E5E5E5;
+            padding: 5px 10px;
+        }
+        .chart-container {
+            height: 400px;
+            margin: 20px 0;
+        }
+        .chart-type-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cyberpunk-header {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-bottom: 2px solid #00FF41;
+            padding: 1rem 0;
+        }
+        .cyberpunk-footer {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-top: 2px solid #00FF41;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+        .nav-link {
+            color: #00FF41 !important;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #E5E5E5 !important;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        .github-link {
+            color: #00FF41;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .github-link:hover {
+            color: #E5E5E5;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        html {
+            background-color: #0C0C0C;
+            color: #E5E5E5;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body {
+            background-color: #0C0C0C;
+            color: #E5E5E5;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .cyberpunk-container {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .cyberpunk-btn {
+            background-color: transparent;
+            border: 2px solid #00FF41;
+            color: #00FF41;
+            padding: 8px 16px;
+            transition: all 0.3s;
+        }
+        .cyberpunk-btn:hover {
+            background-color: #00FF41;
+            color: #0C0C0C;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background-color: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00FF41;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #importOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .import-dialog {
+            background-color: #1A1A1A;
+            border: 2px solid #00FF41;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            width: 90%;
+        }
+        #importPreview {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.9em;
+        }
+        select.cyberpunk-select {
+            background-color: #1A1A1A;
+            border: 1px solid #00FF41;
+            color: #E5E5E5;
+            padding: 5px 10px;
+        }
+        .chart-container {
+            height: 400px;
+            margin: 20px 0;
+        }
+        .chart-type-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cyberpunk-header {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-bottom: 2px solid #00FF41;
+            padding: 1rem 0;
+        }
+        .cyberpunk-footer {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-top: 2px solid #00FF41;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+        .nav-link {
+            color: #00FF41 !important;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #E5E5E5 !important;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        .github-link {
+            color: #00FF41;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .github-link:hover {
+            color: #E5E5E5;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        body {
+            background-color: #0C0C0C;
+            color: #E5E5E5;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .cyberpunk-container {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .cyberpunk-btn {
+            background-color: transparent;
+            border: 2px solid #00FF41;
+            color: #00FF41;
+            padding: 8px 16px;
+            transition: all 0.3s;
+        }
+        .cyberpunk-btn:hover {
+            background-color: #00FF41;
+            color: #0C0C0C;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background-color: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00FF41;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #importOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .import-dialog {
+            background-color: #1A1A1A;
+            border: 2px solid #00FF41;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            width: 90%;
+        }
+        #importPreview {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.9em;
+        }
+        select.cyberpunk-select {
+            background-color: #1A1A1A;
+            border: 1px solid #00FF41;
+            color: #E5E5E5;
+            padding: 5px 10px;
+        }
+        .chart-container {
+            height: 400px;
+            margin: 20px 0;
+        }
+        .chart-type-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cyberpunk-header {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-bottom: 2px solid #00FF41;
+            padding: 1rem 0;
+        }
+        .cyberpunk-footer {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-top: 2px solid #00FF41;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+        .nav-link {
+            color: #00FF41 !important;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #E5E5E5 !important;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        .github-link {
+            color: #00FF41;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .github-link:hover {
+            color: #E5E5E5;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        body {
+            background-color: #0C0C0C;
+            color: #E5E5E5;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .cyberpunk-container {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .cyberpunk-btn {
+            background-color: transparent;
+            border: 2px solid #00FF41;
+            color: #00FF41;
+            padding: 8px 16px;
+            transition: all 0.3s;
+        }
+        .cyberpunk-btn:hover {
+            background-color: #00FF41;
+            color: #0C0C0C;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background-color: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00FF41;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #importOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .import-dialog {
+            background-color: #1A1A1A;
+            border: 2px solid #00FF41;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            width: 90%;
+        }
+        #importPreview {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.9em;
+        }
+        select.cyberpunk-select {
+            background-color: #1A1A1A;
+            border: 1px solid #00FF41;
+            color: #E5E5E5;
+            padding: 5px 10px;
+        }
+        .chart-container {
+            height: 400px;
+            margin: 20px 0;
+        }
+        .chart-type-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cyberpunk-header {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-bottom: 2px solid #00FF41;
+            padding: 1rem 0;
+        }
+        .cyberpunk-footer {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-top: 2px solid #00FF41;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+        .nav-link {
+            color: #00FF41 !important;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #E5E5E5 !important;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        .github-link {
+            color: #00FF41;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .github-link:hover {
+            color: #E5E5E5;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        html {
+            background-color: #0C0C0C;
+            color: #E5E5E5;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body {
+            background-color: #0C0C0C;
+            color: #E5E5E5;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .cyberpunk-container {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .cyberpunk-btn {
+            background-color: transparent;
+            border: 2px solid #00FF41;
+            color: #00FF41;
+            padding: 8px 16px;
+            transition: all 0.3s;
+        }
+        .cyberpunk-btn:hover {
+            background-color: #00FF41;
+            color: #0C0C0C;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background-color: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00FF41;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #importOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .import-dialog {
+            background-color: #1A1A1A;
+            border: 2px solid #00FF41;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            width: 90%;
+        }
+        #importPreview {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.9em;
+        }
+        select.cyberpunk-select {
+            background-color: #1A1A1A;
+            border: 1px solid #00FF41;
+            color: #E5E5E5;
+            padding: 5px 10px;
+        }
+        .chart-container {
+            height: 400px;
+            margin: 20px 0;
+        }
+        .chart-type-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cyberpunk-header {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-bottom: 2px solid #00FF41;
+            padding: 1rem 0;
+        }
+        .cyberpunk-footer {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-top: 2px solid #00FF41;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+        .nav-link {
+            color: #00FF41 !important;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #E5E5E5 !important;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        .github-link {
+            color: #00FF41;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .github-link:hover {
+            color: #E5E5E5;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        body {
+            background-color: #0C0C0C;
+            color: #E5E5E5;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        html {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .cyberpunk-btn {
+            background-color: transparent;
+            border: 2px solid #00FF41;
+            color: #00FF41;
+            padding: 8px 16px;
+            transition: all 0.3s;
+        }
+        .cyberpunk-btn:hover {
+            background-color: #00FF41;
+            color: #0C0C0C;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background-color: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00FF41;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #importOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 12, 12, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .import-dialog {
+            background-color: #1A1A1A;
+            border: 2px solid #00FF41;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            width: 90%;
+        }
+        #importPreview {
+            background-color: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00FF41;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.9em;
+        }
+        select.cyberpunk-select {
+            background-color: #1A1A1A;
+            border: 1px solid #00FF41;
+            color: #E5E5E5;
+            padding: 5px 10px;
+        }
+        .chart-container {
+            height: 400px;
+            margin: 20px 0;
+        }
+        .chart-type-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cyberpunk-header {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-bottom: 2px solid #00FF41;
+            padding: 1rem 0;
+        }
+        .cyberpunk-footer {
+            background-color: rgba(0, 255, 65, 0.1);
+            border-top: 2px solid #00FF41;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+        .nav-link {
+            color: #00FF41 !important;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #E5E5E5 !important;
+            text-shadow: 0 0 10px #00FF41;
+        }
+        .github-link {
+            color: #00FF41;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .github-link:hover {
+            color: #E5E5E5;
+            text-shadow: 0 0 10px #00FF41;
+        }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header class="cyberpunk-header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand nav-link" href="/">Psychology Experiment Simulator</a>
+                <button class="navbar-toggler cyberpunk-btn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" title="Toggle navigation menu" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://github.com/Exios66" target="_blank" rel="noopener noreferrer">
+                                <i class="bi bi-github"></i> GitHub Profile
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
     <div class="container py-4">
-        <h1 class="text-center mb-4" style="color: #00FF41">Psychology Experiment Simulator</h1>
-        
         <div class="cyberpunk-container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
@@ -171,6 +967,22 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="cyberpunk-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">Psychology Experiment Simulator</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="https://github.com/Exios66" target="_blank" rel="noopener noreferrer" class="github-link">
+                        <i class="bi bi-github"></i> Created by Exios66
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <!-- Loading Overlay -->
     <div id="loadingOverlay">
         <div class="text-center">
@@ -200,6 +1012,10 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Main Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize data and chart
@@ -366,7 +1182,7 @@
             async function runSimulation() {
                 try {
                     showLoading();
-                    const response = await fetch('http://localhost:5000/run_simulation', {
+                    const response = await fetch('http://127.0.0.1:5001/run_simulation', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

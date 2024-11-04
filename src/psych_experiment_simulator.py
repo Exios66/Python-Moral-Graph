@@ -264,11 +264,8 @@ def score_chatbot_interaction(
     Raises:
         ValueError: If chatbot or rubric_dimensions is invalid
     """
-    if not isinstance(chatbot, Chatbot):
-        raise ValueError("Invalid chatbot object")
-        
-    if not rubric_dimensions:
-        raise ValueError("Rubric dimensions list cannot be empty")
+    if not isinstance(chatbot, Chatbot) or not rubric_dimensions:
+        raise ValueError("Invalid chatbot object or empty rubric dimensions")
     
     try:
         scores = {}
@@ -352,21 +349,20 @@ def simulate_experiment(num_participants: int = 100) -> pd.DataFrame:
         data_records = []
 
         for i in range(1, num_participants + 1):
-            # Create participant
             participant_id = f"P{i:04d}"
-            num_strengths = random.randint(1, 3)
-            num_weaknesses = random.randint(1, 3)
-            
-            # Ensure no overlap between strengths and weaknesses
+            # Ensure unique topics for strengths and weaknesses
             all_topics = TOPICS.copy()
+            num_strengths = random.randint(1, min(3, len(all_topics)))
             strengths = random.sample(all_topics, num_strengths)
+            
             remaining_topics = [t for t in all_topics if t not in strengths]
+            num_weaknesses = random.randint(1, min(3, len(remaining_topics)))
             weaknesses = random.sample(remaining_topics, num_weaknesses)
             
             participant = Participant(participant_id, strengths, weaknesses)
             assign_chatbots_to_participant(participant, chatbots_pool)
             
-            # Score interactions
+            # Score interactions with unique timestamps
             for key, chatbot in participant.assigned_chatbots.items():
                 scores = score_chatbot_interaction(chatbot, MORAL_GRAPH_RUBRIC_DIMENSIONS)
                 total_score = calculate_total_weighted_score(chatbot, MORAL_GRAPH_RUBRIC_DIMENSIONS)
@@ -378,8 +374,9 @@ def simulate_experiment(num_participants: int = 100) -> pd.DataFrame:
                     'AssignmentType': key,
                     'TotalWeightedScore': total_score,
                     'Timestamp': datetime.now().isoformat(),
-                    **scores
                 }
+                # Add scores with unique keys
+                record.update({f'Score_{k}': v for k, v in scores.items()})
                 data_records.append(record)
             
             participants.append(participant)
